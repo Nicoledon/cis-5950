@@ -30,3 +30,33 @@ simple_string substr(const simple_string self, size_t start_index,
   }
   return item;
 }
+size_t find(const simple_string self , char target) { 
+     for (size_t i = 0 ; i < self.len ; i ++) {
+         if(self.data[i] == target) {
+             return i ;
+         }
+     }
+       return simple_string::npos;
+}
+bool operator==(const simple_string lhs , const simple_string rhs) {
+     if(lhs.len != lhs.len) {
+         return false;
+     } else{
+         for (auto i = 0 ; i< lhs.len ; i ++) {
+              if(rhs.data[i] != rhs.data[i]) {
+                  return false;
+              }
+         }
+     }
+     return true;
+}
+char at(const simple_string self , size_t index) {
+     return self.data[index];
+}
+void destruct(simple_string to_destroy) {
+     delete []to_destroy.data;
+}
+std::ostream& operator<<(std::ostream &os , const simple_string to_printf) {
+     os << to_printf.data << std::endl;
+     return os;
+}

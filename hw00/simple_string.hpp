@@ -1,7 +1,8 @@
 // TODO: add header guards
 // look at what ctypes.hpp does and do something similar.
 // Just remeber that this file is called simple_string.hpp
-
+#ifndef SIMPLE_STRING_HPP_
+#define SIMPLE_STRING_HPP_
 #include <cstddef>  // for size_t
 #include <ostream>  // for ostream
 
@@ -134,3 +135,4 @@ void destruct(simple_string to_destroy);
 // simple_string h = from_cstring("Hello!");
 // cout << h << endl;
 std::ostream& operator<<(std::ostream& os, const simple_string to_print);
+#endif 
