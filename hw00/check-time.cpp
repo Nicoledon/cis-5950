@@ -1,4 +1,4 @@
-#include "./simple_string.hpp"
+#include "simple_string.hpp"
 #include "./ctypes.hpp"
 
 #include <iostream>  // for cerr, cout, and endl
@@ -18,6 +18,13 @@ int main(int argc, char* argv[]) {
   cout << input << endl;
 
   // TODO: THE REST
-
+  auto output = duplicate(input);
+  auto substr1 = substr(input ,1 ,2);
+  auto finder = find(input,'h');
+  auto ch = at(input,1);
+  cout <<"output: "<<output<<endl;
+  cout <<"substr: "<<substr1<<endl;
+  cout <<"finder: "<<finder<<endl;
+  cout <<"ch: " <<ch <<endl; 
   return EXIT_SUCCESS;
 }

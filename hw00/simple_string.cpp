@@ -1,10 +1,9 @@
 #include "simple_string.hpp"
-
-simple_string from_cstring(const char *cstring) {
+simple_string from_cstring(const char* cstring){
   simple_string item;
   auto len = strlen(cstring);
   item.data = new char[len];
-  strcpy(item.data, cstring, len + 1);
+  strncpy(item.data, cstring, len + 1);
   item.len = len + 1;
   return item;
 }
@@ -12,7 +11,7 @@ simple_string duplicate(const simple_string to_copy) {
   simple_string item;
   item.len = to_copy.len;
   item.data = new char[item.len];
-  strcpy(item.data, to_copy.data, to_copy);
+  strncpy(item.data, to_copy.data, to_copy.len);
   return item;
 }
 simple_string substr(const simple_string self, size_t start_index,
@@ -26,7 +25,7 @@ simple_string substr(const simple_string self, size_t start_index,
   } else {
     len = length;
     item.data = new char[len];
-    strcpy(item.data, self.data + len, length);
+    strncpy(item.data, self.data + len, length);
   }
   return item;
 }
@@ -39,11 +38,11 @@ size_t find(const simple_string self , char target) {
        return simple_string::npos;
 }
 bool operator==(const simple_string lhs , const simple_string rhs) {
-     if(lhs.len != lhs.len) {
+     if(lhs.len != rhs.len) {
          return false;
      } else{
          for (auto i = 0 ; i< lhs.len ; i ++) {
-              if(rhs.data[i] != rhs.data[i]) {
+              if(lhs.data[i] != rhs.data[i]) {
                   return false;
               }
          }

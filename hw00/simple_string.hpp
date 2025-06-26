@@ -5,7 +5,7 @@
 #define SIMPLE_STRING_HPP_
 #include <cstddef>  // for size_t
 #include <ostream>  // for ostream
-
+#include<string.h> //  for strlen
 // no other #includes are allowed
 
 /*!
