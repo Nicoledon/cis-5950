@@ -4,14 +4,14 @@ simple_string from_cstring(const char* cstring){
   auto len = strlen(cstring);
   item.data = new char[len];
   strncpy(item.data, cstring, len + 1);
-  item.len = len + 1;
+  item.len = len;
   return item;
 }
 simple_string duplicate(const simple_string to_copy) {
   simple_string item;
   item.len = to_copy.len;
   item.data = new char[item.len];
-  strncpy(item.data, to_copy.data, to_copy.len);
+  strncpy(item.data, to_copy.data, to_copy.len + 1);
   return item;
 }
 simple_string substr(const simple_string self, size_t start_index,
@@ -21,11 +21,13 @@ simple_string substr(const simple_string self, size_t start_index,
   if (start_index + length >= self.len || length == simple_string::npos) {
     len = self.len - start_index;
     item.data = new char[len];
-    strcpy(item.data, self.data + len);
+    item.len = len;
+    strcpy(item.data, self.data + start_index);
   } else {
     len = length;
     item.data = new char[len];
-    strncpy(item.data, self.data + len, length);
+    item.len = len; 
+    strncpy(item.data, self.data + start_index , length);
   }
   return item;
 }
