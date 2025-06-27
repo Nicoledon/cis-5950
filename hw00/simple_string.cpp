@@ -2,7 +2,7 @@
 simple_string from_cstring(const char* cstring){
   simple_string item;
   auto len = strlen(cstring);
-  item.data = new char[len];
+  item.data = new char[len + 1];
   strncpy(item.data, cstring, len + 1);
   item.len = len;
   return item;
@@ -10,7 +10,7 @@ simple_string from_cstring(const char* cstring){
 simple_string duplicate(const simple_string to_copy) {
   simple_string item;
   item.len = to_copy.len;
-  item.data = new char[item.len];
+  item.data = new char[item.len + 1];
   strncpy(item.data, to_copy.data, to_copy.len + 1);
   return item;
 }
@@ -26,7 +26,7 @@ simple_string substr(const simple_string self, size_t start_index,
   }
   if (start_index + length >= self.len - 1 || length == simple_string::npos) {
     len = self.len - start_index;
-    item.data = new char[len];
+    item.data = new char[len + 1];
     item.len = len;
     strcpy(item.data, self.data + start_index);
     item.data[len] = '\0';
