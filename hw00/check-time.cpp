@@ -15,8 +15,8 @@ void invalid(simple_string & str) {
 }
 void valid(simple_string & str) {
      cout << "VALID" << endl;
-     destruct(str); 
-     exit(0); 
+     destruct(str);
+     exit(0);
 }
 bool TonumberFormer(simple_string & str) {
      for (auto i = 0 ; i < str.len ; i ++) {
