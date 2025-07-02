@@ -2,6 +2,7 @@
 #define VEC_HPP
 #include <cstddef>
 #include <string>
+#include<optional>
 // vec is a class that represents
 // an ordered list of strings as a dynamically resizable array.
 class vec {
