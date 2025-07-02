@@ -70,7 +70,6 @@ std::string &vec::at(size_t index) {
 size_t vec::insert(size_t index, const std::string &element) {
   if (index > this->length_) {
     throw std::out_of_range{"out of bound"};
-    return -1;
   } else if (index == this->length_) {
     push_back(element);
     return index;
@@ -90,7 +89,6 @@ size_t vec::insert(size_t index, const std::string &element) {
 size_t vec::erase(size_t index) {
   if (index >= this->length_) {
     throw std::out_of_range{"out of bound"};
-    return -1;
   } else if (index == this->length_ - 1) {
     this->length_ -= 1;
     return this->length_ -1;
