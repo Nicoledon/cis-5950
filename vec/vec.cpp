@@ -72,8 +72,8 @@ size_t vec::insert(size_t index, const std::string &element) {
     throw std::out_of_range{"out of bound"};
     return -1;
   } else if (index == this->length_) {
-      push_back(element);
-      return index;
+    push_back(element);
+    return index;
   } else {
     if (this->length_ == this->capacity_) {
       reserve(2 * this->capacity_);
@@ -82,12 +82,24 @@ size_t vec::insert(size_t index, const std::string &element) {
     for (int i = len - 1; i >= static_cast<int>(index); i--) {
       this->data_[i + 1] = this->data_[i];
     }
-    this->data_[index] = element; 
+    this->data_[index] = element;
     this->length_ += 1;
     return index;
   }
 }
-size_t vec::erase(size_t index) { 
-       return -1;
- }
+size_t vec::erase(size_t index) {
+  if (index >= this->length_) {
+    throw std::out_of_range{"out of bound"};
+    return -1;
+  } else if (index == this->length_ - 1) {
+    this->length_ -= 1;
+    return this->length_ -1;
+  } else {
+    for (auto i = index; i < this->length_ - 1; i++) {
+      this->data_[i] = this->data_[i + 1];
+    }
+    this->length_ -= 1;
+    return index;
+  }
+}
 // TODO: finish the rest
