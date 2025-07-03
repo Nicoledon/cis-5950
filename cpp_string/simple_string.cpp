@@ -4,7 +4,8 @@ using namespace std;
 
 simple_string::simple_string() {
   // TODO: finish the zero arg constructor
-  this->data_ = nullptr;
+  this->data_ = new char[1];
+  this->data_[0] = '\0';
   this->len_ = 0;
 }
 size_t length(const char *cstring) {
@@ -40,7 +41,7 @@ const char *simple_string::data() const { return this->data_; }
 size_t simple_string::len() const { return this->len_; }
 simple_string simple_string::substr(size_t start_index, size_t length) const {
   if (start_index >= this->len_) {
-    throw out_of_range { "out of range" };
+    throw out_of_range{"out of range"};
   } else if (length == simple_string::npos ||
              length > this->len_ - start_index) {
     return simple_string(this->data_ + start_index);
@@ -54,5 +55,38 @@ simple_string simple_string::substr(size_t start_index, size_t length) const {
     item.data_[length] = '\0';
     return item;
   }
+}
+bool simple_string::operator==(const simple_string &other) const {
+  if (other.len_ != this->len_) {
+    return false;
+  }
+  for (auto i = 0; i < other.len_; i++) {
+    if (other.data_[i] != this->data_[i]) {
+      return false;
+    }
+  }
+  return true;
+}
+char &simple_string::at(size_t index) {
+  if (index >= this->len_) {
+    throw out_of_range{"out of range"};
+  } else {
+    return this->data_[index];
+  }
+}
+char &simple_string::operator[](size_t index) {
+  if (index >= this->len_) {
+    throw out_of_range{"out of range"};
+  } else {
+    return this->data_[index];
+  }
+}
+size_t simple_string::find(char target) const {
+  for (auto i = 0; i < this->len_; i++) {
+    if (this->data_[i] == target) {
+      return i;
+    }
+  }
+  return simple_string::npos;
 }
 // TODO: the other functions
