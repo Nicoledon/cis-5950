@@ -528,3 +528,244 @@ TEST_CASE("zero_arg_constructor", "[zero_arg_constructor]") {
 
   free(s1);
 }
+
+TEST_CASE("basic find_first_of", "[find_first_of]") {
+  char* s1 = strdup("attack!!");
+
+  simple_string ss = simple_string(s1);
+  REQUIRE(ss.len() == 8);
+  REQUIRE(ss.data() != nullptr);
+  REQUIRE(strcmp(ss.data(), s1) == 0);
+  REQUIRE(ss.data()[8] == '\0');
+  REQUIRE(simple_string::npos == -1);
+
+  char* toFind1 = strdup("a");
+  char* toFind2 = strdup("t");
+  char* toFind3 = strdup("ck");
+  char* toFind4 = strdup("!");
+  char* toFind5 = strdup("!!kcatta");
+
+  REQUIRE(ss.find_first_of(simple_string(toFind1), 0) == 0);
+  REQUIRE(ss.find_first_of(simple_string(toFind1), 1) == 3);
+  REQUIRE(ss.find_first_of(simple_string(toFind1), 5) == simple_string::npos);
+
+  REQUIRE(ss.find_first_of(simple_string(toFind2), 0) == 1);
+  REQUIRE(ss.find_first_of(simple_string(toFind2), 1) == 1);
+  REQUIRE(ss.find_first_of(simple_string(toFind2), 2) == 2);
+  REQUIRE(ss.find_first_of(simple_string(toFind2), 2) == 2);
+  REQUIRE(ss.find_first_of(simple_string(toFind2), 3) == simple_string::npos);
+
+  REQUIRE(ss.find_first_of(simple_string(toFind3), 0) == 4);
+  REQUIRE(ss.find_first_of(simple_string(toFind3), 4) == 4);
+  REQUIRE(ss.find_first_of(simple_string(toFind3), 5) == 5);
+  REQUIRE(ss.find_first_of(simple_string(toFind3), 6) == simple_string::npos);
+  REQUIRE(ss.find_first_of(simple_string(toFind3), 7) == simple_string::npos);
+
+  REQUIRE(ss.find_first_of(simple_string(toFind4), 1) == 6);
+  REQUIRE(ss.find_first_of(simple_string(toFind4), 3) == 6);
+  REQUIRE(ss.find_first_of(simple_string(toFind4), 6) == 6);
+  REQUIRE(ss.find_first_of(simple_string(toFind4), 7) == 7);
+  REQUIRE_THROWS_AS(ss.find_first_of(simple_string(toFind4), 8), out_of_range);
+
+  REQUIRE(ss.find_first_of(simple_string(toFind5), 0) == 0);
+  REQUIRE(ss.find_first_of(simple_string(toFind5), 1) == 1);
+  REQUIRE(ss.find_first_of(simple_string(toFind5), 3) == 3);
+  REQUIRE(ss.find_first_of(simple_string(toFind5), 7) == 7);
+  REQUIRE_THROWS_AS(ss.find_first_of(simple_string(toFind5), 8), out_of_range);
+
+  free(s1);
+  free(toFind1);
+  free(toFind2);
+  free(toFind3);
+  free(toFind4);
+  free(toFind5);
+}
+
+TEST_CASE("complex find_first_of", "[find_first_of]") {
+  simple_string ss1 = simple_string();
+  REQUIRE(ss1.len() == 0);
+  REQUIRE(ss1.data() != nullptr);
+  REQUIRE(strcmp(ss1.data(), "") == 0);
+  REQUIRE(ss1.data()[0] == '\0');
+  REQUIRE(simple_string::npos == -1);
+
+  char* toFind1 = strdup("");
+  char* toFind2 = strdup("abc");
+
+  REQUIRE_THROWS_AS(ss1.find_first_of(simple_string(toFind1), 0), out_of_range);
+  REQUIRE_THROWS_AS(ss1.find_first_of(simple_string(toFind1), 1), out_of_range);
+
+  REQUIRE_THROWS_AS(ss1.find_first_of(simple_string(toFind2), 0), out_of_range);
+  REQUIRE_THROWS_AS(ss1.find_first_of(simple_string(toFind2), 3), out_of_range);
+
+  char* s1 = strdup("e@rth'$ w0rm$");
+  simple_string ss2 = simple_string(s1);
+  REQUIRE(ss2.len() == 13);
+  REQUIRE(ss2.data() != nullptr);
+  REQUIRE(strcmp(ss2.data(), s1) == 0);
+  REQUIRE(simple_string::npos == -1);
+
+  char* toFind3 = strdup(" ");
+  char* toFind4 = strdup("$@");
+  char* toFind5 = strdup("*%!-_=+");
+  char* toFind6 = strdup("1234567890");
+
+  REQUIRE(ss2.find_first_of(simple_string(toFind3), 0) == 7);
+  REQUIRE(ss2.find_first_of(simple_string(toFind3), 5) == 7);
+  REQUIRE(ss2.find_first_of(simple_string(toFind3), 7) == 7);
+  REQUIRE(ss2.find_first_of(simple_string(toFind3), 10) == simple_string::npos);
+
+  REQUIRE(ss2.find_first_of(simple_string(toFind4), 0) == 1);
+  REQUIRE(ss2.find_first_of(simple_string(toFind4), 1) == 1);
+  REQUIRE(ss2.find_first_of(simple_string(toFind4), 2) == 6);
+  REQUIRE(ss2.find_first_of(simple_string(toFind4), 6) == 6);
+  REQUIRE(ss2.find_first_of(simple_string(toFind4), 7) == 12);
+  REQUIRE(ss2.find_first_of(simple_string(toFind4), 9) == 12);
+  REQUIRE(ss2.find_first_of(simple_string(toFind4), 12) == 12);
+  REQUIRE_THROWS_AS(ss2.find_first_of(simple_string(toFind4), 14),
+                    out_of_range);
+
+  REQUIRE(ss2.find_first_of(simple_string(toFind5), 0) == simple_string::npos);
+  REQUIRE(ss2.find_first_of(simple_string(toFind5), 3) == simple_string::npos);
+  REQUIRE(ss2.find_first_of(simple_string(toFind5), 6) == simple_string::npos);
+  REQUIRE(ss2.find_first_of(simple_string(toFind5), 9) == simple_string::npos);
+
+  REQUIRE(ss2.find_first_of(simple_string(toFind6), 0) == 9);
+  REQUIRE(ss2.find_first_of(simple_string(toFind6), 4) == 9);
+  REQUIRE(ss2.find_first_of(simple_string(toFind6), 7) == 9);
+  REQUIRE(ss2.find_first_of(simple_string(toFind6), 9) == 9);
+  REQUIRE(ss2.find_first_of(simple_string(toFind6), 12) == simple_string::npos);
+
+  char* s2 = strdup("aaaaaaahhhhhhhhhh ah... ??  aha");
+  simple_string ss3 = simple_string(s2);
+  REQUIRE(ss3.len() == 31);
+  REQUIRE(ss3.data() != nullptr);
+  REQUIRE(strcmp(ss3.data(), s2) == 0);
+  REQUIRE(simple_string::npos == -1);
+
+  char* toFind7 = strdup("aaaaaaaaa");
+  char* toFind8 = strdup("h");
+  char* toFind9 = strdup("b onk");
+  char* toFind10 = strdup("");
+
+  REQUIRE(ss3.find_first_of(simple_string(toFind7), 0) == 0);
+  REQUIRE(ss3.find_first_of(simple_string(toFind7), 5) == 5);
+  REQUIRE(ss3.find_first_of(simple_string(toFind7), 6) == 6);
+  REQUIRE(ss3.find_first_of(simple_string(toFind7), 12) == 18);
+  REQUIRE(ss3.find_first_of(simple_string(toFind7), 18) == 18);
+  REQUIRE(ss3.find_first_of(simple_string(toFind7), 19) == 28);
+  REQUIRE(ss3.find_first_of(simple_string(toFind7), 26) == 28);
+  REQUIRE(ss3.find_first_of(simple_string(toFind7), 28) == 28);
+  REQUIRE(ss3.find_first_of(simple_string(toFind7), 29) == 30);
+  REQUIRE(ss3.find_first_of(simple_string(toFind7), 30) == 30);
+  REQUIRE_THROWS_AS(ss3.find_first_of(simple_string(toFind7), 31),
+                    out_of_range);
+
+  REQUIRE(ss3.find_first_of(simple_string(toFind8), 0) == 7);
+  REQUIRE(ss3.find_first_of(simple_string(toFind8), 3) == 7);
+  REQUIRE(ss3.find_first_of(simple_string(toFind8), 7) == 7);
+  REQUIRE(ss3.find_first_of(simple_string(toFind8), 8) == 8);
+  REQUIRE(ss3.find_first_of(simple_string(toFind8), 11) == 11);
+  REQUIRE(ss3.find_first_of(simple_string(toFind8), 14) == 14);
+  REQUIRE(ss3.find_first_of(simple_string(toFind8), 18) == 19);
+  REQUIRE(ss3.find_first_of(simple_string(toFind8), 19) == 19);
+  REQUIRE(ss3.find_first_of(simple_string(toFind8), 25) == 29);
+  REQUIRE(ss3.find_first_of(simple_string(toFind8), 27) == 29);
+  REQUIRE(ss3.find_first_of(simple_string(toFind8), 29) == 29);
+  REQUIRE(ss3.find_first_of(simple_string(toFind8), 30) == simple_string::npos);
+
+  REQUIRE(ss3.find_first_of(simple_string(toFind9), 0) == 17);
+  REQUIRE(ss3.find_first_of(simple_string(toFind9), 17) == 17);
+  REQUIRE(ss3.find_first_of(simple_string(toFind9), 19) == 23);
+  REQUIRE(ss3.find_first_of(simple_string(toFind9), 23) == 23);
+  REQUIRE(ss3.find_first_of(simple_string(toFind9), 25) == 26);
+  REQUIRE(ss3.find_first_of(simple_string(toFind9), 26) == 26);
+  REQUIRE(ss3.find_first_of(simple_string(toFind9), 27) == 27);
+  REQUIRE(ss3.find_first_of(simple_string(toFind9), 28) == simple_string::npos);
+
+  REQUIRE(ss3.find_first_of(simple_string(toFind10), 0) == simple_string::npos);
+  REQUIRE(ss3.find_first_of(simple_string(toFind10), 25) ==
+          simple_string::npos);
+  REQUIRE_THROWS_AS(ss3.find_first_of(simple_string(toFind10), 31),
+                    out_of_range);
+
+  char* s3 = strdup("tabbies\tand spaces and\n new lines \t\t!\t!\n");
+  simple_string ss4 = simple_string(s3);
+  REQUIRE(ss4.len() == 40);
+  REQUIRE(ss4.data() != nullptr);
+  REQUIRE(strcmp(ss4.data(), s3) == 0);
+  REQUIRE(simple_string::npos == -1);
+
+  char* toFind11 = strdup(" \t\n");
+
+  REQUIRE(ss4.find_first_of(simple_string(toFind11), 0) == 7);
+  REQUIRE(ss4.find_first_of(simple_string(toFind11), 7) == 7);
+  REQUIRE(ss4.find_first_of(simple_string(toFind11), 9) == 11);
+  REQUIRE(ss4.find_first_of(simple_string(toFind11), 11) == 11);
+  REQUIRE(ss4.find_first_of(simple_string(toFind11), 15) == 18);
+  REQUIRE(ss4.find_first_of(simple_string(toFind11), 18) == 18);
+  REQUIRE(ss4.find_first_of(simple_string(toFind11), 20) == 22);
+  REQUIRE(ss4.find_first_of(simple_string(toFind11), 22) == 22);
+  REQUIRE(ss4.find_first_of(simple_string(toFind11), 32) == 33);
+  REQUIRE(ss4.find_first_of(simple_string(toFind11), 33) == 33);
+  REQUIRE(ss4.find_first_of(simple_string(toFind11), 34) == 34);
+  REQUIRE(ss4.find_first_of(simple_string(toFind11), 35) == 35);
+  REQUIRE(ss4.find_first_of(simple_string(toFind11), 36) == 37);
+  REQUIRE(ss4.find_first_of(simple_string(toFind11), 38) == 39);
+  REQUIRE(ss4.find_first_of(simple_string(toFind11), 39) == 39);
+  REQUIRE_THROWS_AS(ss4.find_first_of(simple_string(toFind10), 40),
+                    out_of_range);
+
+  char* s4 = strdup("CATERPILLAR");
+  simple_string ss5 = simple_string(s4);
+  REQUIRE(ss5.len() == 11);
+  REQUIRE(ss5.data() != nullptr);
+  REQUIRE(strcmp(ss5.data(), s4) == 0);
+  REQUIRE(simple_string::npos == -1);
+
+  char* toFind12 = strdup("caterpillar");
+  char* toFind13 = strdup("RALLIPRETAC");
+  char* toFind14 = strdup("cAt");
+
+  REQUIRE(ss5.find_first_of(simple_string(toFind12), 0) == simple_string::npos);
+  REQUIRE(ss5.find_first_of(simple_string(toFind12), 6) == simple_string::npos);
+  REQUIRE(ss5.find_first_of(simple_string(toFind12), 10) ==
+          simple_string::npos);
+
+  REQUIRE(ss5.find_first_of(simple_string(toFind13), 0) == 0);
+  REQUIRE(ss5.find_first_of(simple_string(toFind13), 1) == 1);
+  REQUIRE(ss5.find_first_of(simple_string(toFind13), 3) == 3);
+  REQUIRE(ss5.find_first_of(simple_string(toFind13), 5) == 5);
+  REQUIRE(ss5.find_first_of(simple_string(toFind13), 8) == 8);
+  REQUIRE(ss5.find_first_of(simple_string(toFind13), 9) == 9);
+  REQUIRE(ss5.find_first_of(simple_string(toFind13), 10) == 10);
+
+  REQUIRE(ss5.find_first_of(simple_string(toFind14), 0) == 1);
+  REQUIRE(ss5.find_first_of(simple_string(toFind14), 1) == 1);
+  REQUIRE(ss5.find_first_of(simple_string(toFind14), 2) == 9);
+  REQUIRE(ss5.find_first_of(simple_string(toFind14), 4) == 9);
+  REQUIRE(ss5.find_first_of(simple_string(toFind14), 6) == 9);
+  REQUIRE(ss5.find_first_of(simple_string(toFind14), 9) == 9);
+  REQUIRE(ss5.find_first_of(simple_string(toFind14), 10) ==
+          simple_string::npos);
+
+  free(s1);
+  free(s2);
+  free(s3);
+  free(s4);
+  free(toFind1);
+  free(toFind2);
+  free(toFind3);
+  free(toFind4);
+  free(toFind5);
+  free(toFind6);
+  free(toFind7);
+  free(toFind8);
+  free(toFind9);
+  free(toFind10);
+  free(toFind11);
+  free(toFind12);
+  free(toFind13);
+  free(toFind14);
+}
+

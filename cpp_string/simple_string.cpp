@@ -91,8 +91,9 @@ size_t simple_string::find(char target) const {
 }
 vector<char> chs(const simple_string &chars) {
   vector<char> vec;
-  for (auto i = 0; i < chars.len_; i++) {
-    vec.push_back(chars.data_[i]);
+  auto data = chars.data();
+  for (auto i = 0; i < chars.len(); i++) {
+    vec.push_back(data[i]);
   }
   return vec;
 }
@@ -107,8 +108,12 @@ bool inchar(const vector<char> &vec, char ch) {
 size_t simple_string::find_first_of(const simple_string &chars,
                                     size_t pos) const {
   auto vec = chs(chars);
-  for (auto i = pos; i < chars.len_; i++) {
-    if (inchar(vec, chars.data_[i])) {
+  auto data = this->data_;
+  if(pos >= this->len_) {
+    throw out_of_range{"out of range"};
+  }
+  for (auto i = pos; i < this->len_; i++) {
+    if (inchar(vec, data[i])) {
       return i;
     }
   }
