@@ -109,7 +109,7 @@ size_t simple_string::find_first_of(const simple_string &chars,
                                     size_t pos) const {
   auto vec = chs(chars);
   auto data = this->data_;
-  if(pos >= this->len_) {
+  if (pos >= this->len_) {
     throw out_of_range{"out of range"};
   }
   for (auto i = pos; i < this->len_; i++) {
@@ -118,5 +118,28 @@ size_t simple_string::find_first_of(const simple_string &chars,
     }
   }
   return simple_string::npos;
+}
+std::vector<simple_string>
+simple_string::split(const simple_string &delims) const {
+  size_t count = 0;
+  vector<simple_string> vec;
+  auto data = this->data_;
+  while (count < this->len_) {
+    auto p = find_first_of(delims, count);
+    if (p == simple_string::npos) {
+      auto item = simple_string(data + count);
+      if (item.len() != 0) {
+        vec.push_back(item);
+      }
+      break;
+    }
+    data[p] = '\0';
+    auto item = simple_string(data + count);
+    if (item.len() != 0) {
+      vec.push_back(item);
+    }
+    count = p + 1;
+  }
+  return vec;
 }
 // TODO: the other functions
