@@ -36,7 +36,8 @@ simple_string::simple_string(const simple_string &other) {
   }
   this->data_[this->len_] = '\0';
 }
-simple_string::~simple_string() { delete[] this->data_; }
+simple_string::~simple_string() {delete [] this->data_;}
+
 const char *simple_string::data() const { return this->data_; }
 size_t simple_string::len() const { return this->len_; }
 simple_string simple_string::substr(size_t start_index, size_t length) const {
@@ -47,6 +48,7 @@ simple_string simple_string::substr(size_t start_index, size_t length) const {
     return simple_string(this->data_ + start_index);
   } else {
     auto item = simple_string();
+    delete [] item.data_;
     item.len_ = length;
     item.data_ = new char[length + 1];
     for (auto i = start_index; i < start_index + length; i++) {

@@ -1,6 +1,8 @@
 .PHONY = all clean
 
 all: test_suite
+test_string: catch.o test_string.o simple_string.o
+	clang++-18 -g3 -gdwarf-4 -Wall --std=c++2b -o test_string catch.o test_string.o simple_string.o
 
 test_suite: catch.o test_suite.o simple_string.o
 	clang++-18 -g3 -gdwarf-4 -Wall --std=c++2b -o test_suite catch.o test_suite.o simple_string.o
