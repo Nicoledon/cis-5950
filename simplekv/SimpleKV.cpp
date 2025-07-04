@@ -16,16 +16,18 @@ vector<string> SimpleKV::keys(const string& nspace) {
 }
 
 bool SimpleKV::ns_exists(const string& nspace) {
+
   return false;
 }
 
 bool SimpleKV::key_exists(const string& nspace, const string& key) {
+  
   return false;
 }
 
 value_type_info SimpleKV::type(const std::string& nspace,
                                const std::string& key) {
-  return value_type_info::none;
+   return value_type_info::none; 
 }
 
 bool SimpleKV::del(const string& nspace, const string& key) {

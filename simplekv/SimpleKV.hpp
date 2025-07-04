@@ -4,7 +4,8 @@
 #include <optional>
 #include <string>
 #include <vector>
-
+#include<variant>
+#include<unordered_map>
 namespace simplekv {
 
 // Enum that declares three diferent values
@@ -12,6 +13,10 @@ namespace simplekv {
 // to specify what type a current value has or if
 // it exists
 enum class value_type_info { none, string, list };
+
+using InnerMap  = std::pair<std::variant<std::string ,std::vector<std::string>>, value_type_info>;
+using OuterMap  = std::unordered_map<std::string , InnerMap>;
+using kv = std::unordered_map<std::string , OuterMap>;
 
 class SimpleKV {
  public:
@@ -402,6 +407,7 @@ class SimpleKV {
 
  private:
   // TODO: decide what to put here!
+   kv container ;
 };
 
 }  // namespace simplekv

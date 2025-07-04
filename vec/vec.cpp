@@ -40,7 +40,7 @@ void vec::push_back(const std::string &element) {
     this->data_[this->length_] = element;
   } else {
     this->reserve(2 * this->capacity_);
-    this->data_[this->length_] = element;
+    this->date_[this->length_] = element;
   }
   this->length_ += 1;
 }
