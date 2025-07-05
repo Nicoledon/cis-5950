@@ -6,8 +6,8 @@ HPP_SOURCE_FILES = SimpleKV.hpp
 TEST_FILES = test_basic.cpp test_stress.cpp
 
 # define the commands we will use for compilation and library building
-CC = clang-15
-CXX = clang++-15
+CC = clang-18
+CXX = clang++-18
 
 # define useful flags to cc/ld/etc.
 CFLAGS += -g3 -gdwarf-4 -Wall -Werror -Wpedantic -I. -I.. -std=c2x
@@ -17,6 +17,7 @@ all: test_suite
 
 test_suite: test_suite.o SimpleKV.o test_basic.o test_stress.o catch.o
 	$(CXX) $(CXXFLAGS) -o $@ $^
+
 
 test_suite_no_stress: test_suite.o SimpleKV.o test_basic.o catch.o
 	$(CXX) $(CXXFLAGS) -o $@ $^

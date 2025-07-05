@@ -7,21 +7,33 @@ namespace simplekv {
 // General Operations
 vector<string> SimpleKV::namespaces() {
   vector<string> res {};
+  for(auto const & item : container){
+      res.push_back(item.first);
+  }
   return res;
 }
 
 vector<string> SimpleKV::keys(const string& nspace) {
   vector<string> res {};
+  auto items = container[nspace];
+  for(auto const & item : items){
+     res.push_back(item.first);
+  }
   return res;
 }
 
 bool SimpleKV::ns_exists(const string& nspace) {
-
+  if(container.contains(nspace)) {
+    return true;
+  }
   return false;
 }
 
 bool SimpleKV::key_exists(const string& nspace, const string& key) {
-  
+  auto item = container[nspace];
+  if(item.contains(key)){
+     return true;
+  } 
   return false;
 }
 
@@ -43,7 +55,10 @@ optional<string> SimpleKV::sget(const string& nspace, const string& key) {
 void SimpleKV::sset(const string& nspace,
                     const string& key,
                     const string& value) {
-  // do nothing
+    variant<string,vector<string>>item = value;
+    auto p =  make_pair(value,value_type_info::string);
+    this->container[nspace][key] = p;
+     // do nothing
 }
 
 // list operations
