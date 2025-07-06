@@ -615,5 +615,4 @@ TEST_CASE("List union", "[complex list]") {
   opt = kv.lmembers(ns2, key2);
   REQUIRE(opt.has_value());
   REQUIRE(opt.value() == expected);
-  REQUIRE(kv.llen(ns2, key2) == 5);
-}
+  REQUIRE(kv.llen(ns2, key2) == 5);}

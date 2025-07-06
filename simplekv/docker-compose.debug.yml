@@ -1,0 +1,6 @@
+services:
+  simplekv:
+    image: simplekv
+    build:
+      context: .
+      dockerfile: ./Dockerfile
