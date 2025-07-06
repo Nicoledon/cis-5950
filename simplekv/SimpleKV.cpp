@@ -15,6 +15,9 @@ vector<string> SimpleKV::namespaces() {
 // can have any keys inside this object
 vector<string> SimpleKV::keys(const string &nspace) {
   vector<string> res{};
+  if (!ns_exists(nspace)) {
+    return res;
+  }
   auto items = container[nspace];
   for (auto const &item : items) {
     res.push_back(item.first);
@@ -62,19 +65,15 @@ bool SimpleKV::del(const string &nspace, const string &key) {
 }
 
 // string operations
-string getstring(variant<string, vector<string>> elem) {
+string getstring(variant<string, vector<string>> &elem) {
   string item;
   if (holds_alternative<string>(elem)) {
     item = get<string>(elem);
   }
   return item;
 }
-vector<string> getvec(variant<string, vector<string>> elem) {
-  vector<string> item;
-  if (holds_alternative<vector<string>>(elem)) {
-    item = get<vector<string>>(elem);
-  }
-  return item;
+vector<string> &getvec(variant<string, vector<string>> &elem) {
+  return get<vector<string>>(elem);
 }
 optional<string> SimpleKV::sget(const string &nspace, const string &key) {
   if (!ns_exists(nspace) || !key_exists(nspace, key) ||
@@ -109,13 +108,14 @@ ssize_t SimpleKV::llen(const string &nspace, const string &key) {
 
 optional<string> SimpleKV::lindex(const string &nspace, const string &key,
                                   size_t index) {
-  if(!ns_exists(nspace) || !key_exists(nspace , key)) {
-    return key;
-  } else if(this->container[nspace][key].second == value_type_info::string) {
+  if (!ns_exists(nspace) || !key_exists(nspace, key)) {
+    return nullopt;
+  } else if (this->container[nspace][key].second == value_type_info::string) {
     return nullopt;
   } else {
-    auto vec =  getvec(this->container[nspace][key].first);
-    if(index >= vec.size()) return nullopt;
+    auto vec = getvec(this->container[nspace][key].first);
+    if (index >= vec.size())
+      return nullopt;
     return vec[index];
   }
 }
@@ -138,38 +138,90 @@ optional<vector<string>> SimpleKV::lmembers(const string &nspace,
 bool SimpleKV::lset(const string &nspace, const string &key, size_t index,
                     const string &value) {
   if (ns_exists(nspace) && key_exists(nspace, key)) {
-    auto vec =  getvec(this->container[nspace][key].first);
-    if (index >= vec.size() ||
-      this->container[nspace][key].second == value_type_info::string) {
+    if ( this->container[nspace][key].second == value_type_info::string) {
       return false;
     } else {
+      auto &vec = getvec(this->container[nspace][key].first);
+      if(index >= vec.size() || index < 0) return false;
       vec[index] = value;
     }
   } else {
-    vector<string> vec = {value};
-    variant<string,vector<string>> item = vec;
-    this->container[nspace][key].first = item; 
+      return false;
   }
   return true;
 }
-
 bool SimpleKV::lpush(const string &nspace, const string &key,
                      const string &value) {
-  return true;
+
+  if (ns_exists(nspace) && key_exists(nspace, key)) {
+    if (this->container[nspace][key].second != value_type_info::list) {
+      return false;
+    }
+    auto &item = getvec(this->container[nspace][key].first);
+    item.insert(item.begin(), value);
+    return true;
+  } else {
+    vector<string> vec = {value};
+    variant<string, vector<string>> item = vec;
+    this->container[nspace][key].first = item;
+    this->container[nspace][key].second = value_type_info::list;
+    return true;
+  }
 }
 
 optional<string> SimpleKV::lpop(const string &nspace, const string &key) {
-   return nullopt; 
+  if (!ns_exists(nspace) || !key_exists(nspace, key) ||
+      this->container[nspace][key].second != value_type_info::list) {
+    return nullopt;
+  } else {
+    auto &vec = getvec(this->container[nspace][key].first);
+    auto it = vec[0];
+    vec.erase(vec.begin());
+    if (vec.empty()) {
+      this->container[nspace].erase(key);
+    }
+    if (this->container[nspace].empty()) {
+      this->container.erase(nspace);
+    }
+    return it;
+  }
 }
 
 bool SimpleKV::rpush(const string &nspace, const string &key,
                      const string &value) {
-  return true; 
+
+  if (ns_exists(nspace) && key_exists(nspace, key)) {
+    if (this->container[nspace][key].second != value_type_info::list) {
+      return false;
+    }
+    auto &item = getvec(this->container[nspace][key].first);
+    item.push_back(value);
+    return true;
+  } else {
+    vector<string> vec = {value};
+    variant<string, vector<string>> item = vec;
+    this->container[nspace][key].first = item;
+    this->container[nspace][key].second = value_type_info::list;
+    return true;
+  }
 }
 
 optional<string> SimpleKV::rpop(const string &nspace, const string &key) {
-
-  return nullopt;
+  if (!ns_exists(nspace) || !key_exists(nspace, key) ||
+      this->container[nspace][key].second != value_type_info::list) {
+    return nullopt;
+  } else {
+    auto &vec = getvec(this->container[nspace][key].first);
+    auto it = vec[vec.size() - 1];
+    vec.pop_back();
+    if (vec.empty()) {
+      this->container[nspace].erase(key);
+    }
+    if (this->container[nspace].empty()) {
+      this->container.erase(nspace);
+    }
+    return it;
+  }
 }
 
 optional<vector<string>> SimpleKV::lunion(const string &nspace1,
