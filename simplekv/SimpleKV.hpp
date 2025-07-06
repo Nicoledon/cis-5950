@@ -6,6 +6,7 @@
 #include <vector>
 #include<variant>
 #include<unordered_map>
+#include<unordered_set>
 namespace simplekv {
 
 // Enum that declares three diferent values

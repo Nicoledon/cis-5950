@@ -223,12 +223,38 @@ optional<string> SimpleKV::rpop(const string &nspace, const string &key) {
     return it;
   }
 }
-
+vector<string>set2vec(unordered_set<string> elem){
+    vector<string>item;
+    for(auto i : elem){
+        item.push_back(i);
+    }
+    return item;
+}
 optional<vector<string>> SimpleKV::lunion(const string &nspace1,
                                           const string &key1,
                                           const string &nspace2,
                                           const string &key2) {
-  return nullopt;
+  unordered_set<string>items;
+  if(!key_exists(nspace1,key1) && !key_exists(nspace2 ,key2)){
+     return nullopt; 
+  }else if(!key_exists(nspace1,key1) && this->container[nspace2][key2].second == value_type_info::list) {
+      return getvec(this->container[nspace2][key2].first);
+  } else if(!key_exists(nspace2,key2) && this->container[nspace1][key1].second == value_type_info:: list) {
+     return getvec(this->container[nspace1][key1].first);
+  }else if(this->container[nspace1][key1].second != value_type_info::list || this->container
+          [nspace2][key2].second != value_type_info::list){
+      return nullopt;
+  }else{
+     auto v1 = getvec(this->container[nspace1][key1].first);
+     auto v2 = getvec(this->container[nspace2][key2].first);
+     for(auto i : v1){
+         items.insert(i);
+     }
+     for(auto j : v2){
+         items.insert(j);
+     }
+     return set2vec(items);
+  }
 }
 
 optional<vector<string>> SimpleKV::linter(const string &nspace1,
