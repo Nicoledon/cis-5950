@@ -45,7 +45,8 @@ bool SimpleKV::key_exists(const string &nspace, const string &key) {
 
 value_type_info SimpleKV::type(const std::string &nspace,
                                const std::string &key) {
-  if (this->container[nspace].contains(key)) {
+
+  if (key_exists(nspace, key)) {
     return this->container[nspace][key].second;
   }
   return value_type_info::none;
@@ -138,15 +139,16 @@ optional<vector<string>> SimpleKV::lmembers(const string &nspace,
 bool SimpleKV::lset(const string &nspace, const string &key, size_t index,
                     const string &value) {
   if (ns_exists(nspace) && key_exists(nspace, key)) {
-    if ( this->container[nspace][key].second == value_type_info::string) {
+    if (this->container[nspace][key].second == value_type_info::string) {
       return false;
     } else {
       auto &vec = getvec(this->container[nspace][key].first);
-      if(index >= vec.size() || index < 0) return false;
+      if (index >= vec.size() || index < 0)
+        return false;
       vec[index] = value;
     }
   } else {
-      return false;
+    return false;
   }
   return true;
 }
@@ -223,37 +225,39 @@ optional<string> SimpleKV::rpop(const string &nspace, const string &key) {
     return it;
   }
 }
-vector<string>set2vec(unordered_set<string> elem){
-    vector<string>item;
-    for(auto i : elem){
-        item.push_back(i);
-    }
-    return item;
+vector<string> set2vec(unordered_set<string> elem) {
+  vector<string> item;
+  for (auto i : elem) {
+    item.push_back(i);
+  }
+  return item;
 }
 optional<vector<string>> SimpleKV::lunion(const string &nspace1,
                                           const string &key1,
                                           const string &nspace2,
                                           const string &key2) {
-  unordered_set<string>items;
-  if(!key_exists(nspace1,key1) && !key_exists(nspace2 ,key2)){
-     return nullopt; 
-  }else if(!key_exists(nspace1,key1) && this->container[nspace2][key2].second == value_type_info::list) {
-      return getvec(this->container[nspace2][key2].first);
-  } else if(!key_exists(nspace2,key2) && this->container[nspace1][key1].second == value_type_info:: list) {
-     return getvec(this->container[nspace1][key1].first);
-  }else if(this->container[nspace1][key1].second != value_type_info::list || this->container
-          [nspace2][key2].second != value_type_info::list){
-      return nullopt;
-  }else{
-     auto v1 = getvec(this->container[nspace1][key1].first);
-     auto v2 = getvec(this->container[nspace2][key2].first);
-     for(auto i : v1){
-         items.insert(i);
-     }
-     for(auto j : v2){
-         items.insert(j);
-     }
-     return set2vec(items);
+  unordered_set<string> items;
+  if (!key_exists(nspace1, key1) && !key_exists(nspace2, key2)) {
+    return nullopt;
+  } else if (!key_exists(nspace1, key1) &&
+             this->container[nspace2][key2].second == value_type_info::list) {
+    return getvec(this->container[nspace2][key2].first);
+  } else if (!key_exists(nspace2, key2) &&
+             this->container[nspace1][key1].second == value_type_info::list) {
+    return getvec(this->container[nspace1][key1].first);
+  } else if (this->container[nspace1][key1].second != value_type_info::list ||
+             this->container[nspace2][key2].second != value_type_info::list) {
+    return nullopt;
+  } else {
+    auto v1 = getvec(this->container[nspace1][key1].first);
+    auto v2 = getvec(this->container[nspace2][key2].first);
+    for (auto i : v1) {
+      items.insert(i);
+    }
+    for (auto j : v2) {
+      items.insert(j);
+    }
+    return set2vec(items);
   }
 }
 
@@ -261,14 +265,54 @@ optional<vector<string>> SimpleKV::linter(const string &nspace1,
                                           const string &key1,
                                           const string &nspace2,
                                           const string &key2) {
-  return nullopt;
+  if (this->container[nspace1][key1].second != value_type_info::list ||
+      this->container[nspace2][key2].second != value_type_info::list) {
+    return nullopt;
+  } else if (!key_exists(nspace1, key1) || !key_exists(nspace2, key2)) {
+    return {};
+  } else {
+    auto v1 = getvec(this->container[nspace1][key1].first);
+    auto v2 = getvec(this->container[nspace2][key2].first);
+    unordered_set<string> items;
+    for (auto i = 0; i < v1.size(); i++) {
+      for (auto j = 0; j < v2.size(); j++) {
+        if (v1[i] == v2[j]) {
+          items.insert(v1[i]);
+        }
+      }
+    }
+    return set2vec(items);
+  }
 }
 
 optional<vector<string>> SimpleKV::ldiff(const string &nspace1,
                                          const string &key1,
                                          const string &nspace2,
                                          const string &key2) {
-  return nullopt;
-}
 
+  if (this->container[nspace1][key1].second != value_type_info::list ||
+      this->container[nspace2][key2].second != value_type_info::list) {
+    return nullopt;
+  } else if (!key_exists(nspace1, key1) || !key_exists(nspace2, key2)) {
+    return {};
+  } else {
+     auto t1 = getvec(this->container[nspace1][key1].first);
+     auto t2 = getvec(this->container[nspace2][key2].first);
+     unordered_set<string>item;
+     unordered_set<string>e;
+    for(auto i = 0 ; i < t1.size() ; i ++) {
+        for(auto j = 0 ; j < t2.size() ;j ++){
+            if(t1[i] == t2[j]){
+                item.insert(t1[i]);
+            }
+        }
+    }
+    for(auto i : t1){
+        if(!item.contains(i)){
+           e.insert(i);
+        }
+    }
+    return set2vec(e);
+  }
+} // namespace simplekv
 } // namespace simplekv
