@@ -20,7 +20,11 @@ vector<string> SimpleKV::keys(const string &nspace) {
   }
   auto items = container[nspace];
   for (auto const &item : items) {
-    res.push_back(item.first);
+     if(this->container[nspace][item.first].second== value_type_info::none){
+        this->del(nspace , item.first);  
+     }else {
+       res.push_back(item.first);
+     }
   }
   return res;
 }
@@ -290,10 +294,17 @@ optional<vector<string>> SimpleKV::ldiff(const string &nspace1,
                                          const string &nspace2,
                                          const string &key2) {
 
-  if (this->container[nspace1][key1].second != value_type_info::list ||
-      this->container[nspace2][key2].second != value_type_info::list) {
+  if (this->container[nspace1][key1].second == value_type_info::string||
+      this->container[nspace2][key2].second == value_type_info::string) {
     return nullopt;
-  } else if (!key_exists(nspace1, key1) || !key_exists(nspace2, key2)) {
+  } else if(this->container[nspace1][key1].second == value_type_info::list && this->container
+          [nspace2][key2].second == value_type_info::none){
+      return getvec(this->container[nspace1][key1].first);
+  } else if(this->container[nspace1][key1].second == value_type_info::none && this->container
+          [nspace2][key2].second == value_type_info::list){
+      return getvec(this->container[nspace2][key2].first);
+  }
+  else if (!key_exists(nspace1, key1) || !key_exists(nspace2, key2)) {
     return {};
   } else {
      auto t1 = getvec(this->container[nspace1][key1].first);
