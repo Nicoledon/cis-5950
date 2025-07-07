@@ -39,6 +39,8 @@ int main(int argc, char **argv) {
       }else if(words[0] == "sleep"){
           auto num = stoi(words[1]);
           sleep(num);
+      }else {
+          cout <<"retry_shell: "<<line << ": " << "command not found" <<endl;
       }
     }
   }
