@@ -1,0 +1,11 @@
+$ testing retry functionality with arg 2
+$ $ retrying...
+retrying...
+Failed to run program after retrying
+$ counter should have failed after running 3 times.
+$ one from first run and twice from retries
+$ retrying...
+$ counter should have not used all retries this time
+$ ./roulette
+$ is not tested cause it is random :)
+$ 

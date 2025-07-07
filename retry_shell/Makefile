@@ -8,7 +8,8 @@ counter: counter.cpp
 
 roulette: roulette.cpp
 	clang++-18 -g3 -gdwarf-4 -Wall --std=c++2b -o roulette roulette.cpp
-
+nap: nap.cpp
+	clang++-18 -g3 -gdwarf-4 -Wall --std=c++2b -o  nap nap.cpp
 stdin_echo: stdin_echo.cpp
 	clang++-18 -g3 -gdwarf-4 -Wall --std=c++2b -o stdin_echo stdin_echo.cpp
 

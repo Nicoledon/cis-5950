@@ -1,0 +1,4 @@
+echo testing to make sure that the shell only reprompts after previous command has finished
+./nap
+echo should have reprompted after nap finished
+exit

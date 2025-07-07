@@ -1,0 +1,4 @@
+cat ./test_files/Hello.txt
+ls ./test_files
+echo "Howdy!"
+grep -i communism ./test_files/mutual_aid.txt

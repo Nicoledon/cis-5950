@@ -32,8 +32,10 @@ int main(int argc, char **argv) {
       if (!cin.eof()) {
         cerr << "Warning: fatal error while reading input from user" << endl;
       }
+      cout << endl;
       break;
     } else if (line == "exit") {
+      cout << endl;
       break;
     } else {
       auto words = sqlit(line);
@@ -46,24 +48,26 @@ int main(int argc, char **argv) {
         pid_t pid = fork();
         if (pid == 0) {
           if (execvp(arg[0], arg) == -1) {
-            cout << "retrying" << endl;
+                
           }
           exit(EXIT_FAILURE);
         } else {
           int status;
           waitpid(pid, &status, 0);
-          if(status == EXIT_SUCCESS){
+          if (status == EXIT_SUCCESS) {
+            break;
+          } else {
+            if (num == 1)
               break;
-          }else{
-              if(i == num -1) {
-                  cout << "Fail to run program after retrying"<<endl;
-              } else{
-              cout <<"retrying" <<endl;
-              }
+            if (i == num - 1) {
+              cout << "Failed to run program after retrying" << endl;
+            } else {
+              cout << "retrying..." << endl;
+            }
           }
         }
       }
-      delete []arg;
+      delete[] arg;
     }
   }
   return 0;

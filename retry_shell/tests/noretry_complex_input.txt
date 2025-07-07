@@ -1,0 +1,9 @@
+cat ./test_files/mutual_aid.txt
+wc -lw ./test_files/mutual_aid.txt
+not_a_real_command_should_print_a_error_message_to_stderr_but_keep_running
+echo War is in the following lines in war and peace
+grep -i war ./test_files/war_and_peace.txt
+echo Peace shows up less times:
+grep -i peace ./test_files/war_and_peace.txt
+exit
+echo this line should not run

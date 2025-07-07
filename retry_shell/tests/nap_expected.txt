@@ -1,0 +1,5 @@
+$ testing to make sure that the shell only reprompts after previous command has finished
+$ Sleeping for 10 seconds...
+Woke up from 10 second sleep!
+$ should have reprompted after nap finished
+$ 

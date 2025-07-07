@@ -1,0 +1,32 @@
+echo trying a fake command
+not_a_real_command_should_print_a_error_message_to_stderr_but_keep_running
+echo trying what happens when I hit enter a bunch of times
+
+
+
+ehco so far so good
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+sleep 10
+echo sleeping my bum bum away
+
+
+exit
+echo this line should not run

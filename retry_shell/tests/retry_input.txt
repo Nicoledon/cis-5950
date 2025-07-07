@@ -1,0 +1,12 @@
+echo testing retry functionality with arg 2
+rm -f /tmp/.5950-counter
+./counter
+echo counter should have failed after running 3 times.
+echo one from first run and twice from retries
+./counter
+echo counter should have not used all retries this time
+echo ./roulette
+echo is not tested cause it is random :)
+exit
+sleep 10
+cat ./retry_shell.cpp

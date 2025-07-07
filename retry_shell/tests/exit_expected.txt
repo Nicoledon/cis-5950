@@ -1,0 +1,5 @@
+$ hello world!
+$ Goodbye world
+I am leaving you today
+Goodbye, Goodbye, Goodbye
+$ 
