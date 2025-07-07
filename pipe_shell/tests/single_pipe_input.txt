@@ -1,0 +1,4 @@
+ls ./test_files/ | wc -w
+echo the final cut | cat
+grep peace ./test_files/war_and_peace.txt | cat
+grep peace ./test_files/war_and_peace.txt | grep war

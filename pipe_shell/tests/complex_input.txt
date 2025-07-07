@@ -1,0 +1,15 @@
+cat ./test_files/mutual_aid.txt | cat | cat | grep -i communism | wc -lw
+not_a_real_command_should_print_a_error_message_with_strerror_but_keep_running
+echo War shows up
+grep -i war ./test_files/war_and_peace.txt | wc -l
+echo times in War and Peace
+echo Peace only shows up
+grep -i peace ./test_files/war_and_peace.txt | wc -l
+echo times in War and Peace
+echo There are 
+grep -i war ./test_files/war_and_peace.txt | grep -i peace | cat | wc -l
+echo lines that contain both the word War and Peace
+cat ./test_files/war_and_peace.txt | cat | cat | cat | cat | cat | grep war | cat | cat | grep peace | cat | grep the
+cat ./test_files/mutual_aid.txt | cat | grep -i comrade | cat | cat
+exit
+echo this line should not run

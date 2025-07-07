@@ -1,0 +1,7 @@
+echo testing long outputs
+grep -i or ./test_files/mutual_aid.txt
+grep -i or ./test_files/war_and_peace.txt | wc -l
+grep -i or ./test_files/mutual_aid.txt | head
+grep -i the ./test_files/mutual_aid.txt | cat
+exit
+echo this should not run

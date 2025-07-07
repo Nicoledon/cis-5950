@@ -1,0 +1,4 @@
+echo hello world! | cat
+cat ./test_files/Bye.txt | grep bye
+exit
+echo this line should not print
