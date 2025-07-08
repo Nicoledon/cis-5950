@@ -1,4 +1,4 @@
-#include <iostream>
+#include<iostream>
 #include <sstream>
 #include <stdexcept>
 #include <string>
@@ -54,44 +54,58 @@ vector<char **> singlepipe(const vector<string> & words){
       pip.push_back(ch);
       return pip;
 }
+void starter(array<int,2>>& fd , pid_t processes , vector<char**> container , int number ){
+      if(pipe(fd.data()) < 0){
+
+      }
+
+}
 void pipehandler(const vector<string> 
         &arg, int number) {
-     if(number == 1){
-       auto container =  singlepipe(arg);
-       array<int,2> pipe_fds{-1,-1 };
-       if(pipe(pipe_fds.data()) < 0){
-         cerr << "pipe error: " << strerror(errno) << endl;
-         exit(EXIT_FAILURE);
+    auto container =  singlepipe(arg);
+    vector<array<int,2>>fds(number);
+    vector<pid_t>processes(container.size());
+    for(auto i = 0 ; i < container.size() ; i ++){
+       if(i == 0){
+          
+      }else if(i == container.size() -1 ){
+           
+      } else{
+  
+      }
+    }
+    if(pipe(fds[0].data()) < 0){
+      cerr << "pipe error" << strerror(errno) << endl;
+      exit(EXIT_FAILURE);
+    }
+    processes[0] = fork();
+    if(processes[0] == 0){
+       close(fds[0].at(0));
+       int ret = dup2(fds[0].at(1),STDOUT_FILENO);
+       if(ret < 0){
+        cerr << "dup2: "<<strerror(errno) <<endl;
+        exit(EXIT_FAILURE);
        }
-       pid_t pid0 = fork();
-       if(pid0 == 0){
-           close(pipe_fds.at(0));
-           int ret = dup2(pipe_fds.at(1), STDOUT_FILENO);
-           if(ret < 0){
-               cerr << "dup2: " << strerror(errno) <<endl;
-               exit(EXIT_FAILURE);
-           }
-           close(pipe_fds.at(1));
-           execvp(container[0][0],container[0]);
-           exit(EXIT_FAILURE);
+       close(fds[0].at(1));
+       execvp(container[0][0],container[0]);
+    }
+    close(fds[0].at(1));
+    processes[1] =fork();
+    if(processes[1] == 0){
+      int ret = dup2(fds[0].at(0), STDIN_FILENO);
+      if(ret < 0){
+        cerr << "dup2: "<<strerror(errno) <<endl;
+        exit(EXIT_FAILURE);
        }
-       close(pipe_fds.at(1));
-       pid_t pid1 = fork();
-       if(pid1 == 0){
-           int ret  = dup2(pipe_fds.at(0) , STDIN_FILENO);
-           if(ret < 0){
-               cerr << "dup2: " << strerror(errno) <<endl;
-               exit(EXIT_FAILURE);
-           }
-          close(pipe_fds.at(0));
-          execvp(container[1][0],container[1]);
-          exit(EXIT_FAILURE);
-       }
-       close(pipe_fds.at(0));
-       int status;
-       waitpid(pid0 , &status, 0);
-       waitpid(pid1, &status , 0);
-     }
+       close(fds[0].at(0));
+       execvp(container[1][0],container[1]);
+       exit(EXIT_FAILURE);
+    }  
+   close(fds[0].at(0));
+   int status;
+   for(auto i = 0 ; i < container.size() ; i ++){
+      waitpid(processes[i],&status,0); 
+   }
 }
 int main(int argc, char **argv) {
   string line;
