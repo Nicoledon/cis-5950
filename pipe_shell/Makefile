@@ -12,7 +12,7 @@
 all: pipe_shell
 
 pipe_shell: pipe_shell.cpp
-	clang++-15 -g3 -gdwarf-4 -Wall -std=c++2b -o pipe_shell pipe_shell.cpp
+	clang++-18 -g3 -gdwarf-4 -Wall -std=c++2b -o pipe_shell pipe_shell.cpp
 
 tidy-check: 
 	clang-tidy-15 \
