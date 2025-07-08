@@ -24,6 +24,16 @@ char **vec2arg(const vector<string> &words) {
   arg[words.size()] = nullptr;
   return arg;
 }
+int ispipe(const vector<string> &words) {
+  int count = 0;
+  for (auto word : words) {
+    if (word == "|") {
+      count += 1;
+    }
+  }
+  return count;
+}
+void pipehandler(char **arg) {}
 int main(int argc, char **argv) {
   string line;
   while (true) {
@@ -39,16 +49,21 @@ int main(int argc, char **argv) {
       break;
     } else {
       auto words = sqlit(line);
+      auto count = ispipe(words);
       auto arg = vec2arg(words);
-      pid_t pid = fork();
-      if (pid == 0) {
-        execvp(arg[0], arg);
-        exit(EXIT_FAILURE);
+      if (count != 0) {
+         cout << count << endl;
       } else {
-        int status;
-        waitpid(pid, &status, 0);
+        pid_t pid = fork();
+        if (pid == 0) {
+          execvp(arg[0], arg);
+          exit(EXIT_FAILURE);
+        } else {
+          int status;
+          waitpid(pid, &status, 0);
+        }
       }
-      delete[] arg;
+        delete[] arg;
     }
   }
   return 0;
