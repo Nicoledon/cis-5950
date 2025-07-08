@@ -1,4 +1,7 @@
-#include<iostream>
+#include <array>
+#include <cstdlib>
+#include <cstring>
+#include <iostream>
 #include <sstream>
 #include <stdexcept>
 #include <string>
@@ -6,9 +9,6 @@
 #include <sys/wait.h>
 #include <unistd.h>
 #include <vector>
-#include <array>
-#include<cstring>
-#include<cstdlib>
 using namespace std;
 vector<string> sqlit(const string &line) {
   vector<string> words;
@@ -22,7 +22,7 @@ vector<string> sqlit(const string &line) {
 char **vec2arg(const vector<string> &words) {
   char **arg = new char *[words.size() + 1];
   for (auto i = 0; i < words.size(); i++) {
-    arg[i] = const_cast<char *>(words[i].c_str());
+    arg[i] = strdup(words[i].c_str());
   }
   arg[words.size()] = nullptr;
   return arg;
@@ -37,75 +37,100 @@ int ispipe(const vector<string> &words) {
   }
   return count;
 }
-vector<char **> singlepipe(const vector<string> & words){
-      vector<char **> pip ;
-      vector<string> item;
-      for(auto word : words){
-          if(word != "|"){
-             item.push_back(word); 
-          }else{
-              auto elem = item;
-              auto ch = vec2arg(elem);
-              item.clear(); 
-              pip.push_back(ch);
-          }
-      }
-      auto ch = vec2arg(item);
+vector<char **> singlepipe(const vector<string> &words) {
+  vector<char **> pip;
+  vector<string> item;
+  for (auto word : words) {
+    if (word != "|") {
+      item.push_back(word);
+    } else {
+      auto elem = item;
+      auto ch = vec2arg(elem);
+      item.clear();
       pip.push_back(ch);
-      return pip;
-}
-void starter(array<int,2>>& fd , pid_t processes , vector<char**> container , int number ){
-      if(pipe(fd.data()) < 0){
-
-      }
-
-}
-void pipehandler(const vector<string> 
-        &arg, int number) {
-    auto container =  singlepipe(arg);
-    vector<array<int,2>>fds(number);
-    vector<pid_t>processes(container.size());
-    for(auto i = 0 ; i < container.size() ; i ++){
-       if(i == 0){
-          
-      }else if(i == container.size() -1 ){
-           
-      } else{
-  
-      }
     }
-    if(pipe(fds[0].data()) < 0){
-      cerr << "pipe error" << strerror(errno) << endl;
+  }
+  auto ch = vec2arg(item);
+  pip.push_back(ch);
+  return pip;
+}
+void starter(array<int, 2> &fd, pid_t &processes, vector<char **> &container,
+             const int &number) {
+  if (pipe(fd.data()) < 0) {
+    cerr << "pipe error" << strerror(errno) << endl;
+    exit(EXIT_FAILURE);
+  }
+  processes = fork();
+  if (processes == 0) {
+    close(fd.at(0));
+    int ret = dup2(fd.at(1), STDOUT_FILENO);
+    if (ret < 0) {
+      cerr << "dup2: " << strerror(errno) << endl;
       exit(EXIT_FAILURE);
     }
-    processes[0] = fork();
-    if(processes[0] == 0){
-       close(fds[0].at(0));
-       int ret = dup2(fds[0].at(1),STDOUT_FILENO);
-       if(ret < 0){
-        cerr << "dup2: "<<strerror(errno) <<endl;
+    close(fd.at(1));
+    execvp(container[number][number], container[number]);
+  }
+  close(fd.at(1));
+}
+void ender(array<int, 2> &fd, pid_t &processes, vector<char **> &container,
+           const int &number) {
+           processes = fork();
+           if(processes == 0){
+            int ret = dup2(fd.at(0) , STDIN_FILENO);
+            if(ret < 0){
+              cerr <<"dup2: " <<strerror(errno) <<endl;
+              exit(EXIT_FAILURE);
+            }
+            close(fd.at(0));
+            execvp(container[number][0] , container[number]);
+            exit(EXIT_FAILURE);
+           }
+          close(fd.at(0));
+}
+void working(array<int,2>& former , array <int,2> & curr , pid_t & processes , vector<char **> & container , const int &number){
+     if(pipe(curr.data()) < 0){
+        cerr << "pipe error" <<strerror(errno) << endl;
         exit(EXIT_FAILURE);
-       }
-       close(fds[0].at(1));
-       execvp(container[0][0],container[0]);
-    }
-    close(fds[0].at(1));
-    processes[1] =fork();
-    if(processes[1] == 0){
-      int ret = dup2(fds[0].at(0), STDIN_FILENO);
+     }
+     processes = fork();
+     if(processes == 0){
+      close(curr.at(0));
+      int ret = dup2(former.at(0), STDIN_FILENO);
       if(ret < 0){
-        cerr << "dup2: "<<strerror(errno) <<endl;
+        cerr << "dup2: " <<strerror(errno) <<endl;
         exit(EXIT_FAILURE);
-       }
-       close(fds[0].at(0));
-       execvp(container[1][0],container[1]);
-       exit(EXIT_FAILURE);
-    }  
-   close(fds[0].at(0));
-   int status;
-   for(auto i = 0 ; i < container.size() ; i ++){
-      waitpid(processes[i],&status,0); 
-   }
+      }
+      close(former.at(0));
+      ret = dup2(curr.at(1), STDOUT_FILENO);
+      if(ret < 0){
+        cerr << "dup2: "<<strerror(errno)<<endl;
+        exit(EXIT_FAILURE);
+      }
+      close(curr.at(1));
+      execvp(container[number][0],container[number]);
+      exit(EXIT_FAILURE);
+     }
+     close(former.at(0));
+     close(curr.at(1));
+}
+void pipehandler(const vector<string> &arg, int number) {
+  auto container = singlepipe(arg);
+  vector<array<int, 2>> fds(number);
+  vector<pid_t> processes(container.size());
+  for(auto i = 0 ; i < container.size() ; i ++){
+     if(i == 0){
+      starter(fds[i], processes[i], container, i);
+    }else if(i == container.size() -1 ){
+      ender(fds[fds.size() - 1], processes[i],container ,i);
+    } else{
+      working(fds[i - 1] , fds[i] , processes[i] , container , i);
+    }
+  }
+  int status;
+  for (auto i = 0; i < processes.size(); i++) {
+    waitpid(processes[i], &status, 0);
+  }
 }
 int main(int argc, char **argv) {
   string line;
@@ -124,12 +149,13 @@ int main(int argc, char **argv) {
       auto words = sqlit(line);
       auto count = ispipe(words);
       if (count != 0) {
-         pipehandler(words , count);
+        pipehandler(words, count);
       } else {
         auto arg = vec2arg(words);
         pid_t pid = fork();
         if (pid == 0) {
           execvp(arg[0], arg);
+          cout << "No such file or directory"<<endl;
           exit(EXIT_FAILURE);
         } else {
           int status;
