@@ -143,7 +143,6 @@ int main(int argc, char **argv) {
       cout << endl;
       break;
     } else if (line == "exit") {
-      cout << endl;
       break;
     } else {
       auto words = sqlit(line);
