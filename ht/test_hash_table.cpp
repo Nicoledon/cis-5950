@@ -1,6 +1,6 @@
 #include "./catch.hpp"
 #include "./hash_table.hpp"
-
+#include<iostream>
 #include <string>
 #include <list>
 #include <array>
@@ -202,15 +202,12 @@ TEST_CASE("Iterator", "[Test_HashTable]") {
 
   auto it2 = table.begin();
   REQUIRE_FALSE(it2 == table.end());
-
   // Now iterate through the table, verifying each value is found exactly once.
   array<int, 100> num_times_seen = {};   // array of 100 0's
   for (i = 0; i < 100; i++) {
     kv_pair kv;
-
     REQUIRE_FALSE(it2 == table.end());
     REQUIRE_NOTHROW(kv = *it2);
-
     int key;
     REQUIRE_NOTHROW(key = stoi(kv.first));
 

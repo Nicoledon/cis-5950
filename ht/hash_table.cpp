@@ -128,16 +128,32 @@ void hash_table::rehash(size_t count) {
 /////////////////////////////////////////////////////////////////////////////
 
 hash_table::iterator& hash_table::iterator::operator++() {
+  auto it = ht_.buckets_[bucket_num_].end();
 
-  throw logic_error("TODO: this function is unfinished");
+  if (++list_iter_ == it) {
+     for (auto i = bucket_num_ + 1 ; i < ht_.buckets_.size() ; i++) {
+       if (!ht_.buckets_[i].empty()) {
+           list_iter_ = ht_.buckets_[i].begin();
+           bucket_num_ = i ;
+          break;
+       }
+       if (i == ht_.buckets_.size() - 1) {
+           bucket_num_ = ht_.buckets_.size() - 1;
+           list_iter_ = ht_.buckets_[bucket_num_].end();
+           return *this;
+       }
+     }
+  }
+  return *this;
 }
 
 kv_pair& hash_table::iterator::operator*() {
-  auto it = ht_.end();
-  if (it.list_iter_  == this->list_iter_) {
+  auto it = ht_.buckets_[ht_.buckets_.size() -1].end();
+  if (it  == this->list_iter_) {
      throw out_of_range{"out of range"};
   }
-  return *(this->list_iter_);
+  auto & elem = *(this->list_iter_);
+  return elem;
 }
 
 // provded constructor
