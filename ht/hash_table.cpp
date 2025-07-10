@@ -129,10 +129,15 @@ void hash_table::rehash(size_t count) {
 
 hash_table::iterator& hash_table::iterator::operator++() {
 
+  throw logic_error("TODO: this function is unfinished");
 }
 
 kv_pair& hash_table::iterator::operator*() {
-  throw logic_error("TODO: this function is unfinished");
+  auto it = ht_.end();
+  if (it.list_iter_  == this->list_iter_) {
+     throw out_of_range{"out of range"};
+  }
+  return *(this->list_iter_);
 }
 
 // provded constructor
