@@ -27,19 +27,68 @@ string& hash_table::operator[](const string& key) {
   size_t bucket_num = key_to_bucket_num(key);
   // get the corresponding bucket
   auto& bucket = this->buckets_.at(bucket_num);
-
-
+  for(auto &item : bucket) {
+    if(key == item.first){
+      return item.second;
+    }
+  }
+  std::string ch = "";
+  bucket.emplace_back(key,ch);
+  this->size_ += 1;
+  return bucket.back().second;
   // TODO find the key if it exists
   // and either return the corresponding value
   // or perform the insertion
-
-  throw logic_error("TODO: this function is unfinished");
 }
 
 size_t hash_table::size() const {
   return this->size_;
 }
+std::string & hash_table::at(const std::string &key){
+    if (this->load_factor() >= hash_table::MAX_LOAD_FACTOR) {
+    this->rehash(this->buckets_.size() * 2);
+  }
 
+  // calculate which bucket this key belongs to
+  size_t bucket_num = key_to_bucket_num(key);
+  // get the corresponding bucket
+  auto& bucket = this->buckets_.at(bucket_num);
+  for(auto &item : bucket){
+      if(key == item.first){
+        return item.second;
+      }
+  }
+  throw out_of_range{"out of range"};
+}
+bool hash_table::contains(const std::string & key){
+     size_t bucket_num = key_to_bucket_num(key);
+     auto &bucket = this->buckets_.at(bucket_num);
+     for(auto item : bucket){
+         if(key == item.first){
+             return true;
+         }
+     }
+     return false;
+}
+bool hash_table::erase(std::string &key){
+     if(!contains(key)){
+         return false;
+     }
+     size_t bucket_num = key_to_bucket_num(key);
+     auto &bucket = this->buckets_.at(bucket_num);
+     int count = 0;
+     for (const auto & elem : bucket) {
+          if (elem.first == key) {
+            break;
+          }
+       count +=1;
+     }
+     auto it = bucket.begin();
+     std::advance(it , count);
+     bucket.erase(it);
+     this->size_-=1;
+     return true;
+}
 // TODO: implement the remaining hash table functions
 
 /////////////////////////////////////////////////////////////////////////////
@@ -52,12 +101,23 @@ float hash_table::load_factor() {
   //
   // size_t x = 5;
   // float y = static_cast<float>(x);
-
-  throw logic_error("TODO: this function is unfinished");
+  size_t size = this->size();
+  size_t  bu = this->buckets_.size();
+  float x = static_cast<float>(size);
+  float y = static_cast<float>(bu);
+  return x / y ;
 }
-
 void hash_table::rehash(size_t count) {
-  throw logic_error("TODO: this function is unfinished");
+     if(count > this->buckets_.size()){
+        std::vector<std::list<kv_pair>>new_hash_table(count);
+        for(const auto &bucket : this->buckets_){
+           for (const auto & item : bucket) {
+                auto index = hash<string>{}(item.first) % (count);
+                new_hash_table[index].push_back({item.first , item.second});
+           }
+        }
+       this->buckets_ = new_hash_table;
+     }
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -68,7 +128,7 @@ void hash_table::rehash(size_t count) {
 /////////////////////////////////////////////////////////////////////////////
 
 hash_table::iterator& hash_table::iterator::operator++() {
-  throw logic_error("TODO: this function is unfinished");
+
 }
 
 kv_pair& hash_table::iterator::operator*() {

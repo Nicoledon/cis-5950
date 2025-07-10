@@ -5,7 +5,6 @@
 #include <list>
 #include <array>
 #include <stdexcept>
-
 using std::string;
 using std::list;
 using std::array;
