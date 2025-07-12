@@ -32,6 +32,7 @@ static bool verify_token(const string &actual, const string &expected_contents,
   off_t off = *offset;
   string expected = expected_contents.substr(off, actual.length());
   if (actual != expected) {
+    cout << "actual :  " << actual << " "<< "expected :  " << expected << endl;
     *offset = off;
     return false;
   }
@@ -259,7 +260,7 @@ TEST_CASE("Complex", "[Test_BufferedFileReader]") {
   BufferedFileReader bf(kLongFileName);
   BufferChecker bc(bf);
 
-  for (int i = 0; i < 1; i++) {
+  for (int i = 0; i < 3; i++) {
     int count = 0 ;
     while (bf.good()) {
       count +=1;
@@ -275,7 +276,7 @@ TEST_CASE("Complex", "[Test_BufferedFileReader]") {
     opt = bf.get_token();
     REQUIRE_FALSE(opt.has_value());
     offset = 0;
-    //bf.rewind();
+    bf.rewind();
   }
 }
 

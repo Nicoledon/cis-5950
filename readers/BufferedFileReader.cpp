@@ -13,7 +13,8 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
-
+#include <stdio.h>
+#include <string.h>
 #include "BufferedFileReader.hpp"
 
 // one provided function since this one has funky syntax
@@ -33,9 +34,29 @@ BufferedFileReader::~BufferedFileReader() {
      
 }
 BufferedFileReader::BufferedFileReader(BufferedFileReader && other) {
-     
+    this->curr_length_ = other.curr_length_;
+    this->curr_index_ = other.curr_index_;
+    this->fd_ = other.fd_;
+    this->good_ = other.good_;
+    this->count_ = other.count_;
+    for(auto i = 0 ; i < other.curr_length_ ; i ++){
+        this->buffer_[i] = other.buffer_[i];
+    }
+    other.close_file();
 }
 BufferedFileReader &BufferedFileReader::operator=(BufferedFileReader &&other) {
+    if(other == *this) {
+        return *this;
+    }
+    this->curr_length_ = other.curr_length_;
+    this->curr_index_ = other.curr_index_;
+    this->fd_ = other.fd_;
+    this->good_ = other.good_;
+    this->count_ = other.count_;
+    for(auto i = other.curr_index_ ; i < other.curr_length_; i ++){
+        this->buffer_[i] = other.buffer_[i];
+    }
+    other.close_file();
     return *this;
 }
 
