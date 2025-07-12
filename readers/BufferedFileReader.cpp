@@ -39,7 +39,8 @@ BufferedFileReader::BufferedFileReader(BufferedFileReader && other) {
     this->fd_ = other.fd_;
     this->good_ = other.good_;
     this->count_ = other.count_;
-    for(auto i = 0 ; i < other.curr_length_ ; i ++){
+    for(auto i = 0; i < this->BUF_SIZE; i ++){
+
         this->buffer_[i] = other.buffer_[i];
     }
     other.close_file();
