@@ -70,7 +70,18 @@ char BufferedFileReader::get_char() {
     return this->buffer_.data()[this->curr_index_ ++];
 }
 std::optional<std::string> BufferedFileReader::get_token(const std::string &delims) {
-     return std::nullopt;
+     if(this->fd_ < 0 || !this->good_){
+        return std::nullopt;
+     }
+    std::string str;
+    char ch ;
+    while(!delims.contains(ch = get_char())){
+        if(ch == EOF){
+            break;
+        }
+        str += ch;
+    } 
+    return str;
 }
 int BufferedFileReader::tell() const {
     if(this->fd_ >= 0){
@@ -96,6 +107,7 @@ void BufferedFileReader::fill_buffer(){
      auto num = read(this->fd_ , this->buffer_.data() , this->BUF_SIZE);
      if(num == 0){
         this->good_ = false;
+        return ;
      }
      this->curr_index_ = 0 ;
      this->curr_length_ = num; 
