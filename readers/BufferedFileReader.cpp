@@ -20,39 +20,83 @@
 // it is just a wrapper around the good function though.
 
 BufferedFileReader::BufferedFileReader(const std::string &fname) {
-
+     this->fd_ = open(fname.c_str() , O_RDONLY);
+     if(this->fd_ >= 0){
+        this->good_ = true;
+     }
+     this->fill_buffer();
+     this->count_ = 0; 
 }
 BufferedFileReader::~BufferedFileReader() {
-
+    
+    close(this->fd_);
+     
 }
 BufferedFileReader::BufferedFileReader(BufferedFileReader && other) {
-
+     
 }
 BufferedFileReader &BufferedFileReader::operator=(BufferedFileReader &&other) {
     return *this;
 }
 
 void BufferedFileReader::open_file(const std::string &fname) {
-
+     if(this->good_ == true){
+        close(this->fd_);
+     }
+     this->fd_ = open(fname.c_str() , O_RDONLY);
+     this->fill_buffer();
+     this->good_ = true;
+     this->count_ = 0; 
 }
 void BufferedFileReader::close_file() {
-
+     close(this->fd_);
+     this->good_ = false;
+     this->fd_ = -1;
+     this->count_ = 0 ;
+     this->curr_index_ = 0 ;
+     this->curr_length_ = 0;
 }
 char BufferedFileReader::get_char() {
-    return EOF;
+    if(this->good_ == false){
+        return EOF;
+    }
+    if(this->curr_index_ >= this->curr_length_){
+        fill_buffer();
+        if(this->good_ == false){
+           return EOF;
+        }
+    }
+    this->count_ +=1;
+    return this->buffer_.data()[this->curr_index_ ++];
 }
 std::optional<std::string> BufferedFileReader::get_token(const std::string &delims) {
      return std::nullopt;
 }
 int BufferedFileReader::tell() const {
+    if(this->fd_ >= 0){
+        return this->count_;
+    }
     return -1;
 }
 void BufferedFileReader::rewind() {
-
+     if(this->fd_ >= 0){
+        lseek(this->fd_ , 0 , SEEK_SET);
+        fill_buffer();
+        this->count_ = 0 ;
+        this->good_ = true;
+     }
 }
 bool BufferedFileReader::good() const {
-    return false;
+    return this->good_;
 }
 BufferedFileReader::operator bool() const {
   return this->good();
+}
+void BufferedFileReader::fill_buffer(){
+     auto num = read(this->fd_ , this->buffer_.data() , this->BUF_SIZE);
+     if(num == 0){
+        this->good_ = false;
+     }
+     this->curr_index_ = 0 ;
+     this->curr_length_ = num; 
 }

@@ -203,7 +203,8 @@ class BufferedFileReader {
 
   int fd_;              // The File Descriptor that we use to manage our file.
   bool good_;           // Whether or not the reader is good to read
-
+  void fill_buffer();
+  int count_;
   // Suggested Helper:
   // - void fill_buffer();
 };
