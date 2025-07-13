@@ -43,21 +43,30 @@ BufferedFileReader::BufferedFileReader(BufferedFileReader && other) {
 
         this->buffer_[i] = other.buffer_[i];
     }
-    other.close_file();
+    other.good_ = false;
+    other.fd_ = -1;
+    other.count_ = 0 ;
+    other.curr_index_ = 0 ;
+    other.curr_length_ = 0;
 }
 BufferedFileReader &BufferedFileReader::operator=(BufferedFileReader &&other) {
-    if(other == *this) {
-        return *this;
-    }
+    // if(other == *this) {
+    //     return *this;
+    // }
     this->curr_length_ = other.curr_length_;
     this->curr_index_ = other.curr_index_;
     this->fd_ = other.fd_;
     this->good_ = other.good_;
     this->count_ = other.count_;
-    for(auto i = other.curr_index_ ; i < other.curr_length_; i ++){
+    for(auto i = 0 ; i < BUF_SIZE; i ++){
         this->buffer_[i] = other.buffer_[i];
     }
-    other.close_file();
+
+    other.good_ = false;
+    other.fd_ = -1;
+    other.count_ = 0 ;
+    other.curr_index_ = 0 ;
+    other.curr_length_ = 0;
     return *this;
 }
 
@@ -98,7 +107,7 @@ std::optional<std::string> BufferedFileReader::get_token(const std::string &deli
     std::string str;
     char ch ;
     while(!delims.contains(ch = get_char())){
-        if(ch == EOF){
+        if(this->good_ == false){
             break;
         }
         str += ch;

@@ -49,22 +49,21 @@ char SimpleFileReader::get_char() {
      }
 }
 std::optional<std::string> SimpleFileReader::get_chars(size_t n) {
-    std:: string str;
     if (this->good_ == false) {
         return std::nullopt;
     }
-    char ch;
-    for (auto i = 0 ; i < n ; i++) {
-        auto num = read(this->fd_ , &ch , 1);
-        if (num == 0) {
-            this->good_ = false;
-            break;
-        }
-        str += ch;
-    }
-    if (str.length() == 0) {
+    char * ch = new char[n];
+    const auto num = read(this->fd_ , ch , n);
+    if (num == 0) {
+        this->good_ = false;
+        delete [] ch ;
         return std::nullopt;
     }
+    if (num != n) {
+        this->good_ = false;
+    }
+    std:: string str =std::string(ch , num);
+    delete [] ch;
     return str;
 }
 bool SimpleFileReader::good() const {
