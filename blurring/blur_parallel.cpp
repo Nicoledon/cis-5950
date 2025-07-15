@@ -24,11 +24,12 @@ struct thd_arg {
 };
 void *average_pixel(void *arg) {
 
+  vector<struct thd_arg *>*threads =  reinterpret_cast<vector<struct thd_arg *>*>(arg);
+  for(struct thd_arg * &a : *threads){
   UINT sum_r = 0;
   UINT sum_g = 0;
   UINT sum_b = 0;
   UINT count = 0;
-  struct thd_arg *a = reinterpret_cast<struct thd_arg *>(arg);
   int height = a->height;
   int width = a->width;
   int y = a->y;
@@ -58,6 +59,7 @@ void *average_pixel(void *arg) {
   image->set_pixel(x, y, average_color);
   pthread_mutex_unlock(&lock);
   delete a;
+  }
   return nullptr;
 }
 /**
@@ -99,9 +101,10 @@ int main(int argc, char *argv[]) {
   pthread_t thds[n_threads];
   pthread_mutex_init(&lock, nullptr);
   int count = 0;
-  stack<struct thd_arg *> vec;
+
   // Loop through each pixel and turn into negative
   for (size_t y = 0; y < height; ++y) {
+      vector<struct thd_arg *> *threads = new vector <struct thd_arg *>;
     for (size_t x = 0; x < width; ++x) {
       // Read the current pixel RGB color
       // Calculate the negative RGB color
@@ -113,14 +116,10 @@ int main(int argc, char *argv[]) {
       args->size = size;
       args->ref = &image;
       args->image = &average;
-      vec.push(args);
+      threads->push_back(args);
       // Set the negative color
     }
-  }
-  while(!vec.empty()){
-      auto arg = vec.top();
-      vec.pop();
-      pthread_create(&thds[count++] , nullptr , &average_pixel , arg);
+    pthread_create(&thds[count++] , nullptr , &average_pixel , threads);
       if(count == n_threads){
           for (int i = 0 ; i < count ; i ++){
               pthread_join(thds[i] , nullptr);
