@@ -101,5 +101,12 @@ class RequestQueue {
   // TODO: Add
   // You are not allowed to use any built in data structures to C++
   // e.g. no vector, list, deque, etc. You must implement the linked list yourself.
+  int size ;
+  struct QueueNode* head;
+  struct QueueNode* end;
+  pthread_mutex_t cond_lock;
+  pthread_cond_t  cond;
+  pthread_mutex_t rw_lock;
+  bool is_close;
 };
 #endif  // REQUEST_QUEUE_HPP_
