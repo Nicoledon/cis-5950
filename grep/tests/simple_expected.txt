@@ -1,0 +1,6 @@
+test_files/Hello.txt: [Hello]
+Hello World!
+test_files/Bye.txt: [bye]
+test_files/Bye.txt: [Goodbye]
+Goodbye world
+Goodbye, Goodbye, Goodbye

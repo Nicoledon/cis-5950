@@ -1,0 +1,5 @@
+./test_files/Hello.txt Hello World!
+./test_files/Byte.txt Goodbye world Goodbye
+./test_files/mutual_aid.txt a comrade a comrade
+./test_files/war_and_peace.txt I concluded. war and peace
+./test_files/mutual_aid.txt the a and a they
