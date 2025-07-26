@@ -1,0 +1,33 @@
+HTTP/1.1 200 OK
+Content-length: 1532
+
+<html><head><title>595gle</title></head>
+<body>
+<center style="font-size:500%;">
+<span style="position:relative;bottom:-0.33em;color:orange;">5</span><span style="color:red;">9</span><span style="color:gold;">5</span><span style="color:blue;">g</span><span style="color:green;">l</span><span style="color:red;">e</span>
+</center>
+<p>
+<div style="height:20px;"></div>
+<center>
+<form action="/query" method="get">
+<input type="text" size=30 name="terms" />
+<input type="submit" value="Search" />
+</form>
+</center><p>
+<p><br>
+9 results found for <b>buffalo</b>
+<p>
+
+<ul>
+ <li> <a href="/static/./test_tree/books/mobydick.txt">./test_tree/books/mobydick.txt</a> [8]<br>
+ <li> <a href="/static/./test_tree/tiny/buffalo.txt">./test_tree/tiny/buffalo.txt</a> [8]<br>
+ <li> <a href="/static/./test_tree/books/thejunglebook.txt">./test_tree/books/thejunglebook.txt</a> [5]<br>
+ <li> <a href="/static/./test_tree/books/leavesofgrass.txt">./test_tree/books/leavesofgrass.txt</a> [3]<br>
+ <li> <a href="/static/./test_tree/books/sherlockholmes.txt">./test_tree/books/sherlockholmes.txt</a> [1]<br>
+ <li> <a href="/static/./test_tree/books/davincinotebooks.txt">./test_tree/books/davincinotebooks.txt</a> [1]<br>
+ <li> <a href="/static/./test_tree/books/tomsawyer.txt">./test_tree/books/tomsawyer.txt</a> [1]<br>
+ <li> <a href="/static/./test_tree/books/ulysses.txt">./test_tree/books/ulysses.txt</a> [1]<br>
+ <li> <a href="/static/./test_tree/tiny/home-on-the-range.txt">./test_tree/tiny/home-on-the-range.txt</a> [1]<br>
+</ul>
+</body>
+</html>

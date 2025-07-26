@@ -1,0 +1,46 @@
+HTTP/1.1 200 OK
+Content-length: 2956
+
+<html><head><title>595gle</title></head>
+<body>
+<center style="font-size:500%;">
+<span style="position:relative;bottom:-0.33em;color:orange;">5</span><span style="color:red;">9</span><span style="color:gold;">5</span><span style="color:blue;">g</span><span style="color:green;">l</span><span style="color:red;">e</span>
+</center>
+<p>
+<div style="height:20px;"></div>
+<center>
+<form action="/query" method="get">
+<input type="text" size=30 name="terms" />
+<input type="submit" value="Search" />
+</form>
+</center><p>
+<p><br>
+22 results found for <b>hello</b>
+<p>
+
+<ul>
+ <li> <a href="/static/./test_tree/books/ulysses.txt">./test_tree/books/ulysses.txt</a> [16]<br>
+ <li> <a href="/static/./test_tree/bash-4.2/examples/loadables/Makefile.in">./test_tree/bash-4.2/examples/loadables/Makefile.in</a> [6]<br>
+ <li> <a href="/static/./test_tree/bash-4.2/ABOUT-NLS">./test_tree/bash-4.2/ABOUT-NLS</a> [4]<br>
+ <li> <a href="/static/./test_tree/enron_email/967.">./test_tree/enron_email/967.</a> [2]<br>
+ <li> <a href="/static/./test_tree/enron_email/969.">./test_tree/enron_email/969.</a> [2]<br>
+ <li> <a href="/static/./test_tree/bash-4.2/examples/loadables/README">./test_tree/bash-4.2/examples/loadables/README</a> [2]<br>
+ <li> <a href="/static/./test_tree/bash-4.2/tests/redir.tests">./test_tree/bash-4.2/tests/redir.tests</a> [2]<br>
+ <li> <a href="/static/./test_tree/enron_email/974.">./test_tree/enron_email/974.</a> [2]<br>
+ <li> <a href="/static/./test_tree/bash-4.2/tests/invert.tests">./test_tree/bash-4.2/tests/invert.tests</a> [2]<br>
+ <li> <a href="/static/./test_tree/bash-4.2/tests/array.right">./test_tree/bash-4.2/tests/array.right</a> [2]<br>
+ <li> <a href="/static/./test_tree/enron_email/29.">./test_tree/enron_email/29.</a> [1]<br>
+ <li> <a href="/static/./test_tree/enron_email/421.">./test_tree/enron_email/421.</a> [1]<br>
+ <li> <a href="/static/./test_tree/enron_email/86.">./test_tree/enron_email/86.</a> [1]<br>
+ <li> <a href="/static/./test_tree/enron_email/952.">./test_tree/enron_email/952.</a> [1]<br>
+ <li> <a href="/static/./test_tree/bash-4.2/examples/loadables/hello.c">./test_tree/bash-4.2/examples/loadables/hello.c</a> [1]<br>
+ <li> <a href="/static/./test_tree/bash-4.2/tests/comsub-posix.right">./test_tree/bash-4.2/tests/comsub-posix.right</a> [1]<br>
+ <li> <a href="/static/./test_tree/enron_email/934.">./test_tree/enron_email/934.</a> [1]<br>
+ <li> <a href="/static/./test_tree/bash-4.2/tests/comsub-posix.tests">./test_tree/bash-4.2/tests/comsub-posix.tests</a> [1]<br>
+ <li> <a href="/static/./test_tree/bash-4.2/tests/nquote.right">./test_tree/bash-4.2/tests/nquote.right</a> [1]<br>
+ <li> <a href="/static/./test_tree/bash-4.2/shell.c">./test_tree/bash-4.2/shell.c</a> [1]<br>
+ <li> <a href="/static/./test_tree/books/countofmontecristo.txt">./test_tree/books/countofmontecristo.txt</a> [1]<br>
+ <li> <a href="/static/./test_tree/enron_email/128.">./test_tree/enron_email/128.</a> [1]<br>
+</ul>
+</body>
+</html>

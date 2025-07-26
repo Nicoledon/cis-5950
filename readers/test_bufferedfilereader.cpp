@@ -371,6 +371,7 @@ TEST_CASE("Move op=", "[Test_BufferedFileReader]") {
   int fd = bc0.fd();
   auto opt = bf0.get_token();
   REQUIRE(opt.has_value());
+
   REQUIRE(opt.value() == "Project");
 
   auto arr = bc0.buffer();
