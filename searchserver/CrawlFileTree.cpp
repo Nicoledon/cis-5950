@@ -51,7 +51,16 @@ static bool handle_dir(const string& dir_path, WordIndex& index) {
 
   // TODO
   // you may find the readdir function in HttpUtils helpful
-  return false;
+  auto val = readdir(dir_path);
+  auto items = val.value();
+  for(auto const & item : items){
+     if(item.is_dir == true){
+        handle_dir(item.name , index);
+     } else{
+        handle_file(item.name , index);
+     }
+  }
+  return true;
 }
 
 static void handle_file(const string& fpath, WordIndex &index) {
@@ -65,6 +74,7 @@ static void handle_file(const string& fpath, WordIndex &index) {
   // Record each non empty token as a word into the Wordindex specified by index
 
   // Your implementation should also be case in-sensitive and record every word in all lower-case
+   
 }
 
 }  // namespace searchserver

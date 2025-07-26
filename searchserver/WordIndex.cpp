@@ -24,25 +24,26 @@ vector<Result> WordIndex::lookup_word(const string &word) {
     auto obj = Result(item.first, item.second);
     result.push_back(obj);
   }
-  sort(result.begin() , result.end());
+  sort(result.begin(), result.end());
   return result;
 }
 
 vector<Result> WordIndex::lookup_query(const vector<string> &query) {
   vector<Result> results;
   // TODO
-  std::unordered_map<string , int>maps;
+
+  std::unordered_map<string, int> maps;
   for (auto const &word : query) {
     auto items = words[word];
     for (auto const &item : items) {
       maps[item.first] += item.second;
     }
   }
-  for(auto const & obj : maps){
-     auto i = Result(obj.first , obj.second);
-     results.push_back(i);
+  for (auto const &obj : maps) {
+    auto i = Result(obj.first, obj.second);
+    results.push_back(i);
   }
-  sort(results.begin() , results.end());
+  sort(results.begin(), results.end());
   return results;
 }
 
