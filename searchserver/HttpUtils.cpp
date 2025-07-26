@@ -29,6 +29,7 @@
 #include <iostream>
 #include <vector>
 #include <random>
+#include <algorithm>
 #include <array>
 #include "./HttpUtils.hpp"
 
@@ -46,12 +47,19 @@ namespace searchserver {
 
 vector<string> split(const string& input, const string& delims) {
   vector<string> tokens;
-
   // You don't have to implement thius function, but likely would be helpful
   // we would give it to you if it weren't an answer to past HW assignments
-  
+  size_t pos = input.find_first_of(delims);
+  size_t start = 0;
+  while(pos != string::npos){
+     string sub = input.substr(start , pos - start);
+     start +=  pos + 1;
+     tokens.push_back(sub);
+     pos = input.find_first_of(delims);
+  }
+  tokens.push_back(input.substr(start));
   // if you want to use the URI parser you MUST implement this function
-
+  
   return tokens;
 }
 

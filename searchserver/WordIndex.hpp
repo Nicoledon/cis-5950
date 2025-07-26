@@ -4,7 +4,8 @@
 #include <unordered_map>
 #include <vector>
 #include <string>
-
+#include <queue>
+#include <unordered_map>
 #include "./Result.hpp"
 
 using std::string;
@@ -66,6 +67,7 @@ class WordIndex {
 
  private:
   // TODO: add
+  std::unordered_map<std::string , std::unordered_map <std::string , int>> words; 
 };
 
 }

@@ -9,7 +9,7 @@
 .PHONY = clean all tidy-check format
 
 # define the commands we will use for compilation and library building
-CXX = clang++-15
+CXX = clang++-18
 # define useful flags to cc/ld/etc.
 CXXFLAGS = -g3 -gdwarf-4 -Wall -Wpedantic -std=c++2b -pthread -I. -O0
 
