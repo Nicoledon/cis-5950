@@ -35,6 +35,7 @@ static void handle_file(const string& fpath, WordIndex& index);
 optional<WordIndex> crawl_filetree(const string& root_dir) {
   // TODO
   // you probably want to use the helper functions
+  
   return nullopt;
 }
 
