@@ -26,8 +26,8 @@ HEADERS = HttpSocket.hpp \
 
 TESTOBJS = test_wordindex.o \
           	   test_crawlfiletree.o \
-           test_httpsocket.o test_httputils.o \
 		    test_serversocket.o \
+           test_httpsocket.o test_httputils.o \
            test_threadpool.o test_suite.o catch.o
 
 CPP_SOURCE_FILES = HttpSocket.cpp HttpUtils.cpp ServerSocket.cpp WordIndex.cpp ThreadPool.cpp CrawlFileTree.hpp searchserver.cpp

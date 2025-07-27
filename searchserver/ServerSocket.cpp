@@ -36,7 +36,57 @@ ServerSocket::ServerSocket(sa_family_t family, const string& address, uint16_t p
   // address structures necessary yourself. You only need to set the
   // port, address and family field of those structs.
   // The rest can be zero'd out.
+  struct addrinfo hints;
+  memset(&hints, 0, sizeof(struct addrinfo));
+  hints.ai_family = AF_INET6;       // IPv6 (also handles IPv4 clients)
+  hints.ai_socktype = SOCK_STREAM;  // stream
+  hints.ai_flags = AI_PASSIVE;      // use an address we can bind to a socket and accept client connections on
+  hints.ai_flags |= AI_V4MAPPED;    // use v4-mapped v6 if no v6 found
+  hints.ai_protocol = IPPROTO_TCP;  // tcp protocol
+  hints.ai_canonname = nullptr;
+  hints.ai_addr = nullptr;
+  hints.ai_next = nullptr;
+  struct addrinfo *result;
+  string str_port = to_string(port);
+  int res = getaddrinfo(address.c_str(),str_port.c_str(), &hints, &result);
+  if (res != 0) {
+    std::cerr << "getaddrinfo() failed: ";
+    std::cerr << gai_strerror(res) << std::endl;
+    exit(0);
+  }
+  int listen_fd = -1;
+  for (struct addrinfo *rp = result; rp != nullptr; rp = rp->ai_next) {
+    listen_fd = socket(rp->ai_family,
+                       rp->ai_socktype,
+                       rp->ai_protocol);
+    if (listen_fd == -1) {
+      // Creating this socket failed.  So, loop to the next returned
+      // result and try again.
+      std::cerr << "socket() failed: " << strerror(errno) << std::endl;
+      listen_fd = 0;
+      continue;
+    }
+    int optval = 1;
+    setsockopt(listen_fd, SOL_SOCKET, SO_REUSEADDR,
+               &optval, sizeof(optval));
 
+    // Try binding the socket to the address and port number returned
+    // by getaddrinfo().
+    if (bind(listen_fd, rp->ai_addr, rp->ai_addrlen) == 0) {
+      // Bind worked!  Print out the information about what
+      // we bound to.
+      break;
+    }
+    close(listen_fd);
+  }
+  freeaddrinfo(result);
+  if (listen(listen_fd, SOMAXCONN) != 0) {
+    std::cerr << "Failed to mark socket as listening: ";
+    std::cerr << strerror(errno) << std::endl;
+    close(listen_fd);
+    exit(0);
+  }
+  listen_sock_fd_ = listen_fd;
 }
 
 ServerSocket::~ServerSocket() {
