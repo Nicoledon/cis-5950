@@ -45,7 +45,9 @@ optional<WordIndex> crawl_filetree(const string &root_dir) {
   // TODO
   // you probably want to use the helper functions
   WordIndex index;
-  handle_dir(root_dir, index);
+  if (!handle_dir(root_dir, index)){
+      return std::nullopt;
+  }
   return index;
 }
 
