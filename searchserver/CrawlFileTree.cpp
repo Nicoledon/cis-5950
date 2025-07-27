@@ -11,10 +11,18 @@
 
 #include "./CrawlFileTree.hpp"
 #include "./HttpUtils.hpp"
-
+#include <stdio.h>
+#include <fstream>
 using std::string;
 using std::optional;
 using std::nullopt;
+//source :: kimi 
+std::string read_file(const std::string& path) {
+    std::ifstream in(path, std::ios::binary);
+    if (!in) throw std::runtime_error("open failed");
+    return std::string(std::istreambuf_iterator<char>(in),
+                       std::istreambuf_iterator<char>());
+}
 
 namespace searchserver {
 
@@ -35,8 +43,9 @@ static void handle_file(const string& fpath, WordIndex& index);
 optional<WordIndex> crawl_filetree(const string& root_dir) {
   // TODO
   // you probably want to use the helper functions
-  
-  return nullopt;
+  WordIndex index;
+  handle_dir(root_dir , index);
+  return index;
 }
 
 
@@ -54,10 +63,14 @@ static bool handle_dir(const string& dir_path, WordIndex& index) {
   auto val = readdir(dir_path);
   auto items = val.value();
   for(auto const & item : items){
+     if(item.name == "." || item.name == ".."){
+        continue;
+     }
      if(item.is_dir == true){
         handle_dir(item.name , index);
      } else{
-        handle_file(item.name , index);
+       auto temp = dir_path + "/"  + item.name;
+       handle_file(temp, index);
      }
   }
   return true;
@@ -65,7 +78,7 @@ static bool handle_dir(const string& dir_path, WordIndex& index) {
 
 static void handle_file(const string& fpath, WordIndex &index) {
   // TODO: implement
-
+  
   // Read the contents of the specified file into a string
 
   // Search the string for all tokens, by splitting on " \r\t\v\n,.:;?!"
@@ -74,7 +87,10 @@ static void handle_file(const string& fpath, WordIndex &index) {
   // Record each non empty token as a word into the Wordindex specified by index
 
   // Your implementation should also be case in-sensitive and record every word in all lower-case
-   
+  string str = read_file(fpath);
+  auto tokens = split(str , " \r\t\v\n,.:;?!");
+  for(auto const & token : tokens){
+      index.record(token , fpath);   
+  }
 }
-
 }  // namespace searchserver
