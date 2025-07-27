@@ -24,7 +24,6 @@
 #include <optional>
 
 namespace searchserver {
-
 // splits a string
 std::vector<std::string> split(const std::string& input, const std::string& delims);
 

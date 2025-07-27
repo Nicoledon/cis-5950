@@ -49,6 +49,7 @@ TEST_CASE("Integration", "[Test_CrawlFileTree]") {
   res = crawl_filetree("./test_tree/bash-4.2/support");
   REQUIRE(res);
   idx = res.value();
+  
   REQUIRE(idx.num_words() == 12328);
 
   // Process query 1, check results.

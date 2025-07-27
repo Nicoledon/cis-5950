@@ -1,7 +1,6 @@
 #include "./WordIndex.hpp"
 
 #include <algorithm>
-
 namespace searchserver {
 
 WordIndex::WordIndex() {}
@@ -31,19 +30,22 @@ vector<Result> WordIndex::lookup_word(const string &word) {
 vector<Result> WordIndex::lookup_query(const vector<string> &query) {
   vector<Result> results;
   // TODO
-
-  std::unordered_map<string, int> maps;
-  for (auto const &word : query) {
-    auto items = words[word];
-    for (auto const &item : items) {
-      maps[item.first] += item.second;
-    }
+  std::unordered_map<string,int>maps;
+  std::unordered_map<string,int>sets;
+  for(auto const & check : query) {
+      auto vec = lookup_word(check);
+      for(auto const & result : vec){
+         maps[result.doc_name] += result.rank;
+         sets[result.doc_name] += 1;
+      }
   }
-  for (auto const &obj : maps) {
-    auto i = Result(obj.first, obj.second);
-    results.push_back(i);
+  for(auto item : maps){
+     if(sets[item.first] == query.size()){
+        auto obj = Result(item.first , item.second);
+        results.push_back(obj);
+     }
   }
-  sort(results.begin(), results.end());
+  sort(results.begin() , results.end());
   return results;
 }
 

@@ -41,7 +41,7 @@ class WordIndex {
   // Lookup a word in the index, getting a list of all documents that contain the word
   // and a rank which is the number of occurances of that word in the document
   //
-  // Arguments:
+  // Arguments
   //  - word: a word we are looking up results for
   //
   // Returns:
@@ -68,7 +68,7 @@ class WordIndex {
 
  private:
   // TODO: add
-  std::unordered_map<std::string , std::unordered_map <std::string , int>> words; 
+  std::map<std::string , std::map <std::string , int>> words; 
 };
 
 }
