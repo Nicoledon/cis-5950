@@ -53,11 +53,13 @@ vector<string> split(const string& input, const string& delims) {
   size_t start = 0;
   while(pos != string::npos){
      string sub = input.substr(start , pos - start);
-     start +=  pos + 1;
-     tokens.push_back(sub);
-     pos = input.find_first_of(delims);
+     start =  pos + 1;
+     if(sub.size() != 0){
+        tokens.push_back(sub);
+     }
+     pos = input.find_first_of(delims , start);
   }
-  tokens.push_back(input.substr(start));
+ // tokens.push_back(input.substr(start));
   // if you want to use the URI parser you MUST implement this function
   
   return tokens;

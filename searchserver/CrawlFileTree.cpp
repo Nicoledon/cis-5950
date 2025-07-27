@@ -13,6 +13,7 @@
 #include "./HttpUtils.hpp"
 #include <stdio.h>
 #include <fstream>
+#include <bits/stdc++.h>
 using std::string;
 using std::optional;
 using std::nullopt;
@@ -67,7 +68,8 @@ static bool handle_dir(const string& dir_path, WordIndex& index) {
         continue;
      }
      if(item.is_dir == true){
-        handle_dir(item.name , index);
+        auto temp = dir_path + "/"  + item.name;
+        handle_dir(temp , index);
      } else{
        auto temp = dir_path + "/"  + item.name;
        handle_file(temp, index);
@@ -89,7 +91,10 @@ static void handle_file(const string& fpath, WordIndex &index) {
   // Your implementation should also be case in-sensitive and record every word in all lower-case
   string str = read_file(fpath);
   auto tokens = split(str , " \r\t\v\n,.:;?!");
-  for(auto const & token : tokens){
+  for(auto  & token : tokens){
+      for_each(token.begin() , token.end() , [](char& c){
+         c = tolower(c);
+      });
       index.record(token , fpath);   
   }
 }
