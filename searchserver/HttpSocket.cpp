@@ -24,7 +24,6 @@ using std::vector;
 using std::optional;
 using std::nullopt;
 using std::array;
-
 namespace searchserver {
 
 static const char * const kHeaderEnd = "\r\n\r\n";
@@ -46,9 +45,14 @@ optional<string> HttpSocket::next_request() {
   // caller invokes next_request()!
 
   // TODO
-  size_t end_of_req = 0;
-  
-  return std::nullopt;
+  size_t len = 0; 
+  if((len = this->buffer_.find(kHeaderEnd)) == string::npos) {
+     wrapped_read(this->fd_ , &this->buffer_);
+     len = this->buffer_.find(kHeaderEnd);
+  }
+  string str = this->buffer_.substr(0 , len + kHeaderEndLen);
+  this->buffer_ = this->buffer_.substr(len + kHeaderEndLen);
+  return str;
 }
 
 bool HttpSocket::write_response(const std::string& response) const {
