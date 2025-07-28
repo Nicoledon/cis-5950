@@ -19,7 +19,7 @@ extern "C" {
 #include <cstdint>  // for uint32_t, etc.
 #include <deque>    // for std::deque
 #include <vector>   // for std::vector
-
+#include <semaphore>
 namespace searchserver {
 
 // A ThreadPool is, well, a pool of threads. ;)  A ThreadPool is an
@@ -84,6 +84,7 @@ class ThreadPool {
 
   // This variable stores how many threads exist.
   uint32_t num_threads_;
+
 
   // disable move and copying otherwise this becomes a headache.
   ThreadPool& operator=(const ThreadPool& other) = delete;

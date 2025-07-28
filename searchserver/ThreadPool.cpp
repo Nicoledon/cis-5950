@@ -26,7 +26,6 @@ ThreadPool::ThreadPool(size_t num_threads) : q_lock_(), q_cond_(), work_queue_()
    pthread_mutex_init(&q_lock_, NULL);
    pthread_cond_init(&q_cond_, NULL);
    for(size_t i = 0 ; i < num_threads ; i ++) {
-      pthread_t thd;
       thread_vec_.push_back(thd); 
    }
 }
@@ -44,7 +43,6 @@ ThreadPool:: ~ThreadPool() {
 // Enqueue a Task for dispatch.
 void ThreadPool::dispatch(Task t) {
   // TODO
-    this->work_queue_.push(t);  
 }
 
 // This is the main loop that all worker threads are born into.  They
@@ -53,7 +51,9 @@ void ThreadPool::dispatch(Task t) {
 // when they notice that killthreads_ is true.
 void *thread_loop(void *t_pool) {
   // TODO
-
+  }
+  
+ 
   return nullptr;
 }
 
