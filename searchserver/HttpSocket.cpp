@@ -47,7 +47,7 @@ optional<string> HttpSocket::next_request() {
 
   // TODO
   size_t end_of_req = 0;
-
+  
   return std::nullopt;
 }
 
