@@ -57,7 +57,7 @@ optional<string> HttpSocket::next_request() {
 
 bool HttpSocket::write_response(const std::string& response) const {
   // TODO
-  return false;
+  return (wrapped_write(this->fd_ , response) != 0);
 }
 
 // Below functions are given to you
