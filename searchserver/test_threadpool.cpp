@@ -46,6 +46,7 @@ TEST_CASE("Basic", "[Test_ThreadPool]") {
 
     tp->dispatch(next_t);
   }
+
   usleep(1250000);  // 1.25s
 
   // Make sure that there are still tasks pending.
