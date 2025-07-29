@@ -38,7 +38,10 @@ ThreadPool::ThreadPool(size_t num_threads)
 
 ThreadPool::~ThreadPool() {
   // TODO
+  pthread_mutex_lock(&this->q_lock_);
   killthreads_ = true;
+  pthread_cond_broadcast(&this->q_cond_);
+  pthread_mutex_unlock(&this->q_lock_);
   for (size_t i = 0; i < this->num_threads_; i++) {
     pthread_join(this->thread_vec_[i], NULL);
   }
@@ -75,6 +78,13 @@ void *thread_loop(void *t_pool) {
     }
     while (t->work_queue_.size() == 0) {
       pthread_cond_wait(&t->q_cond_, &t->q_lock_);
+      if (t->killthreads_) {
+        break;
+      }
+    }
+    if (t->killthreads_) {
+      pthread_mutex_unlock(&t->q_lock_);
+      break;
     }
     auto val = t->work_queue_.at(0);
     t->work_queue_.pop_front();
