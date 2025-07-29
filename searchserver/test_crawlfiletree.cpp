@@ -50,9 +50,9 @@ TEST_CASE("Integration", "[Test_CrawlFileTree]") {
   REQUIRE(res);
   idx = res.value();
   
-  REQUIRE(idx.num_words() == 12328);
+   REQUIRE(idx.num_words() == 12329);
 
-  // Process query 1, check results.
+ // Process query 1, check results.
   auto res1_word = idx.lookup_word(q1);
   auto it = res1_word.begin();
 

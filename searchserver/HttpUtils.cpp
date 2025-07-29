@@ -51,6 +51,10 @@ vector<string> split(const string& input, const string& delims) {
   // we would give it to you if it weren't an answer to past HW assignments
   size_t pos = input.find_first_of(delims);
   size_t start = 0;
+  if (pos == string::npos){
+      tokens.push_back(input);
+      return tokens;
+  }
   while(pos != string::npos){
      string sub = input.substr(start , pos - start);
      start =  pos + 1;
@@ -58,8 +62,10 @@ vector<string> split(const string& input, const string& delims) {
         tokens.push_back(sub);
      }
      pos = input.find_first_of(delims , start);
-  }
- // tokens.push_back(input.substr(start));
+    } 
+  auto str = input.substr(start);
+  
+  tokens.push_back(str);
   // if you want to use the URI parser you MUST implement this function
   
   return tokens;
