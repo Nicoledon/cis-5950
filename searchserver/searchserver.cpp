@@ -24,10 +24,26 @@ void TestTaskFn(void *arg) {
   searchserver::ServerSocket *server = (searchserver::ServerSocket *)arg;
   auto opt_httpserver = server->accept_client();
   pthread_mutex_unlock(&m);
-  auto &httpserver = opt_httpserver.value();
-  std::string path = "./sample_http/sotired_response.txt";
-  std::string content = read_files(path);
-  httpserver.write_response(content);
+  if (opt_httpserver.has_value()) {
+    auto &httpserver = opt_httpserver.value();
+    auto opt_string = httpserver.next_request();
+    std::string str = "";
+    if (opt_string.has_value()) {
+      str = opt_string.value();
+    }
+    auto num = str.find_first_of("\r\n");
+    str = str.substr(0 , num);
+    auto s = searchserver::split(str," ");
+    searchserver::URLParser p;
+    p.parse(s[1]);
+    std::string path = p.path();
+    std::string content = "";
+    if(path == "/"){
+       path = "./sample_http/initial_response.txt";
+       content = read_files(path);
+    }
+    httpserver.write_response(content);
+  }
 }
 searchserver::URLParser parse_url(searchserver::HttpSocket &httpserver) {
   auto str = httpserver.next_request();
