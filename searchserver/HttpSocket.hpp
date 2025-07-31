@@ -93,7 +93,6 @@ class HttpSocket {
   // Used for the case where we read more data than we need to process a request
   // store the excess data read into the buffer so that next time we read, we can parse from here
   std::string buffer_;
-
   socklen_t addr_len_;
   struct sockaddr_storage addr_;
 };

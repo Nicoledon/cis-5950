@@ -45,7 +45,7 @@ optional<string> HttpSocket::next_request() {
   // caller invokes next_request()!
 
   // TODO
-  size_t len = 0; 
+  size_t len = 0;
   if((len = this->buffer_.find(kHeaderEnd)) == string::npos) {
      wrapped_read(this->fd_ , &this->buffer_);
      len = this->buffer_.find(kHeaderEnd);
