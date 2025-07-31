@@ -5,6 +5,7 @@
 #include "./CrawlFileTree.hpp"
 #include "./ServerSocket.hpp"
 #include "./ThreadPool.hpp"
+#include "./HttpUtils.hpp"
 #include <mutex>
 #include<fstream>
 using namespace std;
@@ -28,6 +29,15 @@ void TestTaskFn(void *arg) {
   httpserver.write_response(content);
   pthread_mutex_unlock(&m);
 }
+searchserver::URLParser parse_url(searchserver::HttpSocket &httpserver){
+  auto str = httpserver.next_request();
+  auto temp = str.value().find_first_of("\r\n");
+  auto temp_str = str.value().substr(0 , temp);
+  auto temp_vec = searchserver::split(temp_str , " ");
+  searchserver::URLParser p;
+  p.parse(temp_vec[1]);
+  return p;
+}
 int main(int argc, char *argv[]) {
   // TODO
   // Combine everything together! 
@@ -50,11 +60,12 @@ int main(int argc, char *argv[]) {
   // pool.dispatch(next_t);
   // }
   auto opt_httpserver = server.accept_client();
-  auto & httpserver = opt_httpserver.value();
-  auto str = httpserver.next_request();
-  std::string path = "./sample_http/initial_response.txt";
-  std::string content = read_files(path);
-  httpserver.write_response(content);
+  auto &httpserver = opt_httpserver.value();
+  auto p = parse_url(httpserver);
+  std::cout << p.path() << std::endl;
+  // std::string path = "./sample_http/initial_response.txt";
+  // std::string content = read_files(path);
+  // httpserver.write_response(content);
   pthread_mutex_destroy(&m);
   // You can just use AF_INET "127.0.0.1" as the address for the searchserver for simplicity.
   return EXIT_SUCCESS;
