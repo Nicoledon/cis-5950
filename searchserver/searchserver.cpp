@@ -44,11 +44,17 @@ int main(int argc, char *argv[]) {
   //auto value  = val.value();
   pthread_mutex_init(&m ,NULL); 
   auto server = searchserver::ServerSocket(AF_INET , "127.0.0.1" ,port);
-  searchserver::ThreadPool pool(10);
-  while(1){
-  searchserver::ThreadPool::Task next_t = {TestTaskFn, &server};
-  pool.dispatch(next_t);
-  }
+  // searchserver::ThreadPool pool(10);
+  // while(1){
+  // searchserver::ThreadPool::Task next_t = {TestTaskFn, &server};
+  // pool.dispatch(next_t);
+  // }
+  auto opt_httpserver = server.accept_client();
+  auto & httpserver = opt_httpserver.value();
+  auto str = httpserver.next_request();
+  std::string path = "./sample_http/initial_response.txt";
+  std::string content = read_files(path);
+  httpserver.write_response(content);
   pthread_mutex_destroy(&m);
   // You can just use AF_INET "127.0.0.1" as the address for the searchserver for simplicity.
   return EXIT_SUCCESS;
