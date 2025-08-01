@@ -71,7 +71,7 @@ void TestTaskFn(void *arg) {
       std::string start = "<ul>";
       std::string parse  = "";
       auto args = p.args();
-      auto result = item.lookup_word(args.at("terms"));
+      auto result = item.lookup_query(searchserver::split(args.at("terms"), " "));
       std::string temp = std::format(R"(<br>{} results found for <b>{}</b><p>)" , result.size() , args.at("terms"));
       for(auto const & index : result){
          std::string para  = std::format(R"( <li> <a href="{}">{}</a> [{}]<br>)" ,index.doc_name , index.doc_name , index.rank);
@@ -82,7 +82,6 @@ void TestTaskFn(void *arg) {
       size_t content_size = somecontent.size();
       len += to_string(content_size) + "\r\n\r\n";
       content = head + len + somecontent;
-      std::cout << content << std::endl;
       httpserver.write_response(content);
     }
   }
@@ -121,7 +120,7 @@ int main(int argc, char *argv[]) {
     thd->item = value;
     searchserver::ThreadPool::Task next_t = {TestTaskFn, thd};
     pool.dispatch(next_t);
-    usleep(1250000); // 1.25s
+    usleep(12500000); // 1.25s
   }
   // std::string path = "./sample_http/initial_response.txt";
   // std::string content = read_files(path);
