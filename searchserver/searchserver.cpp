@@ -8,6 +8,7 @@
 #include <iostream>
 #include <mutex>
 #include <string>
+#include <format>
 using namespace std;
 
 pthread_mutex_t m;
@@ -66,12 +67,22 @@ void TestTaskFn(void *arg) {
     }else{
       std::string head = "HTTP/1.1 200 OK\r\n";
       std::string len = "Content-length: ";
-      std::string somecontent = "<html><head><title>595gle</title></head><body><center style="font-size:500%;"><span style="position:relative;bottom:-0.33em;color:orange;">5</span><span style="color:red;">9</span><span style="color:gold;">5</span><span style="color:blue;">g</span><span style="color:green;">l</span><span style="color:red;">e</span></center><p><div style="height:20px;"></div><center><form action="/query" method="get"><input type="text" size=30 name="terms" /><input type="submit" value="Search" /></form></center><p><p>
-      ";
-      std::string temp = "<br>22 results found for <b>hello</b><p>";
+      std::string somecontent = R"(<html><head><title>595gle</title></head><body><center style="font-size:500%;"><span style="position:relative;bottom:-0.33em;color:orange;">5</span><span style="color:red;">9</span><span style="color:gold;">5</span><span style="color:blue;">g</span><span style="color:green;">l</span><span style="color:red;">e</span></center><p><div style="height:20px;"></div><center><form action="/query" method="get"><input type="text" size=30 name="terms" /><input type="submit" value="Search" /></form></center><p><p>)";     
       std::string start = "<ul>";
-      
-      content = read_files(path);
+      std::string parse  = "";
+      auto args = p.args();
+      auto result = item.lookup_word(args.at("terms"));
+      std::string temp = std::format(R"(<br>{} results found for <b>{}</b><p>)" , result.size() , args.at("terms"));
+      for(auto const & index : result){
+         std::string para  = std::format(R"( <li> <a href="{}">{}</a> [{}]<br>)" ,index.doc_name , index.doc_name , index.rank);
+         parse += para;
+      }
+      std::string end = "</ul></body></html>";
+      somecontent = somecontent + start + temp + parse + end;
+      size_t content_size = somecontent.size();
+      len += to_string(content_size) + "\r\n\r\n";
+      content = head + len + somecontent;
+      std::cout << content << std::endl;
       httpserver.write_response(content);
     }
   }
